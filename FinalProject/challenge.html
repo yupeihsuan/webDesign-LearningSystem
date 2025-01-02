@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>測驗</title>
+    <link rel="stylesheet" href="challenge.css">
+    <script>
+        
+
+        var totalTime= 10*60;   //十分鐘
+        var timerId;
+        var sc=0;
+
+        
+
+        var explanations = {
+            1: "1.利用畢氏定理： a&sup2 + b&sup2 = c&sup2<br>" +
+                "2. 將各個答案帶入：<br>" +
+                "(A) 7² + 24² = 625 = 25²<br>" +
+                "(B) 3² + 4² = 25 = 5²<br>" +
+                "(C) 5² + 12² = 169 ≠ 14²<br>" +
+                "(D) 8² + 15² = 289 = 17²<br>" +
+                "常見的直角三角形三邊長：(3,4,5), (5,12,13), (7,24,25), (8,15,17)",
+            2: "1. ΔEFG 是一個直角三角形，因此可以利用畢氏定理算出邊長的長度<br>" +
+                "2. EG² = EF² + FG²<br>" +
+                "3. 17² = 8² + FG²<br>" +
+                "4. 將式子移項後可得：FG² = 17² - 8² = 225<br>" +
+                "5. 因此 FG = ±15<br>" +
+                "6. 邊長為正，所以 FG = 15",
+            3: "1. 利用兩點距離公式： AB = √((X₁ - X₂)² + (Y₁ - Y₂)²)<br>" +
+                "2. 帶入數值：AB = √((2-5)² + (3-7)²) = 5<br>",
+            4: "1. ΔABC 是一個直角三角形，因此利用畢氏定理先算出斜邊 BC 的長度。<br>" +
+                "2. BC² = AB² + AC²<br>" +
+                "3. BC² = 15² + 20² = 625<br>" +
+                "4. BC = 25<br>" +
+                "5. 直角三角形 ABC 面積：<br>" +
+                "   面積 = (1/2) × AB × AC = (1/2) × BC × AD<br>" +
+                "6. 解出：AD = 12<br>" +
+                "公式：斜邊上的高 AD = 兩股乘積 ÷ 斜邊長<br>",
+            5: "1. 設旗杆的高為 X 公尺，並依題意作圖。<br>" +
+                "2. 由畢氏定理可知：(X+1)² = X² + 7²<br>" +
+                "3. 整理後得：X² + 2X + 1 = X² + 49<br>" +
+                "4. 解出：X = 24<br>" +
+                "5. 旗杆的高為 24 公尺<br>",
+            6: "1. 直角三角形的三邊長會滿足畢氏定理：a² + b² = c²<br>" +
+                "2. 將各選項帶入：<br>" +
+                "(A) 10² + 16² = 356 ≠ 25²<br>" +
+                "(B) 13² + 13² = 338 ≠ 25²<br>" +
+                "(C) 20² + 24² = 976 ≠ 25²<br>" +
+                "(D) 7² + 24² = 625 = 25²<br>",
+            7: "1. 直角三角形的三邊長會滿足畢氏定理：a² + b² = c²<br>" +
+                "2. 8² + 15² = a²<br>" +
+                "   64 + 225 = 289<br>" +
+                "   a = 17<br>" +
+                "常見的直角三角形三邊長：(3,4,5), (5,12,13), (7,24,25), (8,15,17)",
+            8: "1. 直角三角形的三邊長會滿足畢氏定理：a² + b² = c²<br>" +
+                "2. 設另一股長為 x，則 24² + x² = 30²<br>" +
+                "3. x² = 30² - 24² = 900 - 576 = 324<br>" +
+                "4. x = 18<br>",
+            9: "1. 設長為 4X 吋、寬為 3X 吋，X ≠ 0<br>" +
+                "2. 由畢氏定理可知：25² = (4X)² + (3X)² = 16X² + 9X² = 25X²<br>" +
+                "3. 即 X² = 25，X = ±5 (負值不合)<br>" +
+                "4. 故此電視螢幕面板的長為 4 × 5 = 20 吋<br>",
+            10: "1. ΔABD 是一個直角三角形，因此可以利用畢氏定理算出邊長的長度。<br>" +
+                "2. BD² = AB² + AD²<br>" +
+                "3. (7√2)² = AB² + AD² = 98<br>" +
+                "4. 已知 ABCD 為正方形，所以三角形 ABD 中的 AB 為 a，則 AB = AD = a<br>" +
+                "5. 所以 a² + a² = 2a² = 98，a² = 49，因此 a = ±7<br>" +
+                "6. 因為邊長為正，所以邊長為 7 公分<br>",
+            11: "1. 這是一個直角三角形，根據畢氏定理，a² + b² = c²<br>" +
+                "2. 假設另一股為x，則8² + x² = 17²<br>" +
+                "3. 計算得：64 + x² = 289。<br>" +
+                "4. 移項得：x² = 289 - 64 = 225。<br>" +
+                "5. 解得：x = 15。<br>" +
+                "因此，另一股為15公分。",
+        
+            12: "1. 這是一個直角三角形，根據畢氏定理，a² + b² = c²。<br>" +
+                "2. 代入數值，5² + 12² = c²。<br>" +
+                "3. 計算得：25 + 144 = c²。<br>" +
+                "4. 169 = c²，解得c = 13。<br>" +
+                "因此，斜邊為13公分。",
+            
+            13: "1. 這是一個直角三角形，根據畢氏定理，a² + b² = c²。<br>" +
+                "2. 假設另一股為x，則7² + x² = 25²。<br>" +
+                "3. 計算得：49 + x² = 625。<br>" +
+                "4. 移項得：x² = 625 - 49 = 576。<br>" +
+                "5. 解得：x = 24。<br>" +
+                "因此，另一股為24公分。",
+            
+            14: "1. 這是一個等腰直角三角形，根據畢氏定理，a² + b² = c²。<br>" +
+                "2. 假設腰長為x，則x² + x² = (5√2)²。<br>" +
+                "3. 2x² = 50。<br>" +
+                "4. x² = 25, x = 5。<br>" +
+                "因此，腰長為5公分。",
+            
+            15: "1. 這是一個等腰直角三角形，根據畢氏定理，a² + b² = c²。<br>" +
+                "2. 假設斜邊為x，則(√2)² + (√2)² = x²。<br>" +
+                "3. 4 = x²。<br>" +
+                "4. x = 2。<br>" +
+                "因此，斜邊為2公分。",
+            
+            16: "1. 使用兩點間距離公式：<br>" +
+                "2. 距離公式：d = &#8730<span class='line'>(x2 - x1)² + (y2 - y1)²</span>。<br>" +
+                "3. 代入坐標點E(-3, 6) 和 F(5, 6)：d = &#8730<span class='line'>(5 - (-3))² + (6 - 6)²</span> = &#8730<span class='line'>(8)² + (0)²</span> = &#8730<span class='line'>64</span> = 8。<br>" +
+                "因此，EF的長度為8。",
+            
+            17: "1. 使用兩點間距離公式：<br>" +
+                "2. 距離公式：d = &#8730<span class='line'>(x2 - x1)² + (y2 - y1)²</span>。<br>" +
+                "3. 代入坐標點E(-3, 6) 和 G(-3, -1)：d = &#8730<span class='line'>(-3 - (-3))² + (-1 - 6)²</span> = &#8730<span class='line'>(0)² + (-7)²</span> = &#8730<span class='line'>49</span> = 7。<br>" +
+                "因此，EG的長度為7。",
+            
+            18: "1. 使用兩點間距離公式：<br>" +
+                "2. 距離公式：d = &#8730<span class='line'>(x2 - x1)² + (y2 - y1)²</span>。<br>" +
+                "3. 代入坐標點P(5, 2) 和 Q(8, 2)：d = &#8730<span class='line'>(8 - 5)² + (2 - 2)²</span> = &#8730<span class='line'>(3)² + (0)²</span> = &#8730<span class='line'>9</span> = 3。<br>" +
+                "因此，PQ的長度為3。",
+            
+            19: "1. 使用兩點間距離公式：<br>" +
+                "2. 距離公式：d = &#8730<span class='line'>(x2 - x1)² + (y2 - y1)²</span>。<br>" +
+                "3. 代入坐標點Q(8, 2) 和 R(8, -4)：d = &#8730<span class='line'>(8 - 8)² + (-4 - 2)²</span> = &#8730<span class='line'>(0)² + (-6)²</span> = &#8730<span class='line'>36</span> = 6。<br>" +
+                "因此，QR的長度為6。",
+
+            20: "1. 使用兩點間距離公式，d = &#8730<span class='line'>(x2 - x1)² + (y2 - y1)²</span>。<br>計算<span class='line'>AB</span>、<span class='line'>BC</span>和<span class='line'>AC</span>的邊長：<br>" +
+                "   <span class='line'>AB</span> = 5, <span class='line'>BC</span> = 6, <span class='line'>AC</span> = 5。<br>" +
+                "2. 由於<span class='line'>AB</span> = <span class='line'>AC</span>，這是一個等腰三角形。<br>" +
+                "3. 因此，三角形ABC是等腰三角形。",
+
+            21:"因為△ABD和△BCD皆為直角三角形<br>"+
+                "=> <span class='line'>AB</span>&sup2 + <span class='line'>AD</span>&sup2 = <span class='line'>BD</span>&sup2 = <span class='line'>BC</span>&sup2 + <span class='line'>CD</span>&sup2<br>"+
+                "=> 乙 + 甲 = 25&sup2 = 丙 + 丁<br>"+
+                "所以甲 + 乙 + 丙 + 丁 = 2 x 25&sup2 = 2 x 625 = 1250",
+            22:"<span class='line'>BE</span> = x => <span class='line'>CE</span> = 21-x"+
+                "因為10&sup2 - x&sup2 = <span class='line'>AE</span>&sup2 = 17&sup2 - (21-x)&sup2"+
+                "=> 100 - x&sup2 = 289 -441 +42x - x&sup2"+
+                "=> 42x = 252 => x=6"+
+                "所以<span class='line'>BE</span> = 6",
+            23:"因為<span class='line'>AE</span> = &#8730<span class='line'>10&sup2 - 6&sup2</span> = 8"+
+                "所以三角形ABC面積 = 1/2 所以三角形ABC面積 = 1/2 x 21 x 8 = 84",
+            24:"因為長方形的周長為28公分，因此長和寬之和為28/2 = 14公分"+
+                "設寬的長度為x公分，長為x + 2 公分"+
+                "可得 x + (x+2) = 14 => 2x + 2 = 14 => x = 6"+
+                "長 = x + 2 = 6 + 2 =8公分，寬 = x = 6公分"+
+                "根據畢氏定理可的對角線長度 = &#8730<span class='line'>6&sup2 + 8&sup2</span> = 10",
+            25:"梯頂到牆角的距離 = &#8730<span class='line'>2.5&sup2 - 0.7&sup2</span> = 2.4(公尺)"+
+                "下滑後梯頂到牆角的距離 = 2.4 - 0.4 = 0.2(公尺)"+
+                "此時梯腳到牆角的距離 = &#8730<span class='line'>2.5&sup2 - 2&sup2</span> = 1.5(公尺)"+
+                "所以梯腳向外移動 1.5 - 0.7 = 0.8(公尺)"
+        };
+
+        var correctAnswers={
+            1:'C',
+            2:'A',
+            3:'A',
+            4:'C',
+            5:'C',
+            6:'D',
+            7:'C',
+            8:'D',
+            9:'A',
+            10:'C',
+            11:'15',
+            12:'13',
+            13:'24',
+            14:'5',
+            15:'2',
+            16:'8',
+            17:'7',
+            18:'3',
+            19:'6',
+            20:'等腰',
+            21:'1250',
+            22:'6',
+            23:'84',
+            24:'10',
+            25:'0.8'
+        }
+
+        function submitAns(){
+            clearInterval(timerId);
+            sc = 0;
+
+            localStorage.setItem('finishedTest', 'true');
+
+            // 檢查每一題
+            for (var questionNumber in explanations) {
+                var options = document.getElementsByName('p' + questionNumber);
+                var explanationDiv = document.getElementById('exp' + questionNumber);
+                
+                var selectedAnswer = null;
+
+                // 檢查選擇題的答案
+                if (options.length > 0) {
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].checked) {
+                            selectedAnswer = options[i].value;
+                            break;
+                        }
+                    }
+                }
+                // 檢查填充題的答案
+                else if (document.getElementById('p' + questionNumber + 'Answer')) {
+                    selectedAnswer = document.getElementById('p' + questionNumber + 'Answer').value.trim();
+                }
+
+                // 禁用所有選項
+                for (var i = 0; i < options.length; i++) {
+                    options[i].disabled = true;
+                }
+
+                var inputs = document.querySelectorAll('input[type="text"]');
+
+                // 禁用所有输入框
+                for (var i = 0; i < inputs.length; i++) {
+                    inputs[i].disabled = true;
+                }
+
+                // 判斷正確與否
+                if (selectedAnswer == correctAnswers[questionNumber]) {
+                    sc += 4;
+                    explanationDiv.innerHTML = "<img class='fbImg' src='correct.jpg'>" + 
+                        '<h4 style="color:green;">答對了!</h4>' + explanations[questionNumber];
+                } else {
+                    sc += 0;
+                    explanationDiv.innerHTML = "<img class='fbImg' src='wrong.jpg'>" + 
+                        '<h4 style="color:red;">答錯了! 正確答案：' + correctAnswers[questionNumber] + '</h4>' + 
+                        explanations[questionNumber];
+                }
+            }
+
+            // 顯示總分
+            var showSC = document.getElementById('showSc');
+            if (sc >= 100) {
+                showSC.style.backgroundColor = "#dff0d8";
+                showSC.style.color = "#3c763d";
+                showSC.innerHTML = "全部都答對了!" + "<br>您的分數：" + sc;
+            } else if (sc >= 60) {
+                showSC.style.backgroundColor = "#ffdbc1";
+                showSC.style.color = "#8a6d3b";
+                showSC.innerHTML = "還有些錯誤，可以到練習區再次練習" + "<br>您的分數：" + sc;
+            } else {
+                showSC.style.backgroundColor = "#eed0d0";
+                showSC.style.color = "#a94442";
+                showSC.innerHTML = "錯誤有點多，建議到課程區再次學習" + "<br>您的分數：" + sc;
+            }
+        }
+
+
+
+        function countdown(){
+            var min=Math.floor(totalTime/60);
+            var sec=totalTime%60;
+
+            min = min<10? "0"+min : min;
+            sec = sec<10? "0"+sec : sec;
+
+            document.getElementById("time").textContent = `${min}:${sec}`;
+
+            if(totalTime<=0){
+                clearInterval(timerId);
+                alert("時間到!自動交卷");
+                document.getElementById('submit').disabled = true;
+                submitAns();
+            }else{
+                totalTime--;
+            }
+        }
+
+        function shuffleQuestions() {
+            const questionContainers = Array.from(document.querySelectorAll(".queDiv"));
+            const parentContainer = questionContainers[0].parentNode;
+
+            questionContainers.sort(() => Math.random() - 0.5);
+
+            questionContainers.forEach((container) => {
+                parentContainer.appendChild(container);
+            });
+        }
+
+        // 顯示作答規則的提示框
+        function showRules() {
+            const rulesModalHtml = `
+                <div id="rulesModal" class="Rulemodal">
+                    <div class="RuleModalContent">
+                        <span class="RuleClose" onclick="closeRulesModal();">&times;</span>
+                        <h4>挑戰區作答規則</h4>
+                        <p>1. 隨機<strong style="color: red">限時測驗</strong>(10分鐘)</p>
+                        <p>2. 根據題目選擇正確答案，題型包含<strong>選擇、填充</strong></p>
+                        <p>3. 點擊<strong style="color: red">「提交答案」</strong>查看作答結果</p>
+                        <p>4. 送出答案後，<strong>學習回饋</strong>頁會顯示「完成」</p>
+                    </div>
+                </div>
+            `;
+            const modalContainer = document.createElement('div');
+            modalContainer.innerHTML = rulesModalHtml;
+            document.body.appendChild(modalContainer);
+        }
+
+        // 關閉提示框
+        function closeRulesModal() {
+            const modal = document.getElementById('rulesModal');
+            if (modal) {
+                modal.remove();
+            }
+            timerId = setInterval(countdown, 1000);
+        }
+
+
+        window.onload = function() {
+            // 顯示用戶名稱
+            document.getElementById('usernameText').innerHTML = localStorage.getItem("loggedInUser");
+            showRules()
+
+            // 隨機打亂題目順序
+            shuffleQuestions();
+
+            // 顯示每個題目的題號
+            var questions = document.querySelectorAll(".que");
+            questions.forEach(function(question, index) {
+                var title = question.querySelector("h3");
+                title.innerHTML = "第" + (index + 1) + "題：" + title.innerHTML;
+            });            
+        };
+
+
+        function logoutUser() {
+            window.location.href = "userLogin.html";
+        }
+
+        
+
+    </script>
+</head>
+    <body>
+        <header>
+            <div class="menu">
+                <ul class="drop-down-menu">
+                    <li><a href="homePage.html">首頁</a></li>
+                    <li><a href="totalClass.html">課程</a>
+                        <ul>
+                            <li><a href="">發現畢氏定理</a>
+                                <ul>
+                                    <li><a href="ch11.html">直角三角形的定義及名稱</a></li>
+                                    <li><a href="ch12.html">畢氏定理(或商高定理、勾股定理)</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="">畢氏定理的應用</a>
+                                <ul>
+                                    <li><a href="ch21.html">利用畢氏定理求矩形的對角線長</a></li>
+                                    <li><a href="ch22.html">直角三角形斜邊上的高</a></li>
+                                    <li><a href="ch23.html">畢氏定理的生活應用</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="">直角坐標平面上兩點的距離公式</a>
+                                <ul>
+                                    <li><a href="ch31.html">數線上的兩點距離</a></li>
+                                    <li><a href="ch32.html">直角座標平面上兩點的距離</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="exercise1.html">練習區</a>
+                        <ul>
+                            <li><a href="exercise1.html">發現畢氏定理</a></li>
+                            <li><a href="exercise2.html">畢氏定理的應用</a></li>
+                            <li><a href="exercise3.html">直角坐標平面上兩點的距離公式</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="challenge.html">挑戰區</a></li>
+
+                    <li><a href="feedback.html">學習回饋</a></li>
+                </ul>
+            </div>
+
+            
+            <div class="username-display" id="usernameDisplay">
+                <img src="profile.png" alt="使用者圖片">
+                <div class="dropdown">
+                    <span id="usernameText">使用者</span>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" onclick="logoutUser();">登出</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="box">
+                <div class="content">
+                    <h2 id="testName">挑戰區：2-3-1~2-3-3測驗</h2>
+                    <div id="timer">剩餘時間：<span id="time">10:00</span></div>
+                    <p id="showSc" ></p>
+                    
+                    
+                    
+                    <hr>
+                    <div class="queDiv">
+                        <div class="que" id="que1">
+                            <table class="q1">
+                                <tr>
+                                    <td colspan="2"><h3>下列哪一組數字<font color=red>不是</font>直角三角形的邊長?</h3></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p1A" name="p1" value="A"><label for="p1A">(A) 7、24、25</label></td>
+                                    <td><input type="radio" id="p1B" name="p1" value="B"><label for="p1B">(B) 3、4、5</label></td>   
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p1C" name="p1" value="C"><label for="p1C">(C) 5、13、14</label></td>
+                                    <td><input type="radio" id="p1D" name="p1" value="D"><label for="p1D">(D) 8、15、17</label></td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+    
+                        <div class="exp" id="exp1"></div>
+                    </div>
+    
+                    <div class="queDiv">
+                        <div class="que" id="que2">
+                            <table class="q2">
+                                <tr>
+                                    <td colspan="2"><h3>求矩形EFGH中<span class="line">FG</span>的長度</h3>
+                                    <img src="12.png" alt=""></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p2A" name="p2" value="A"><label for="p2A">(A) 15</label></td>
+                                    <td><input type="radio" id="p2B" name="p2" value="B"><label for="p2B">(B) 14</label></td>   
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p2C" name="p2" value="C"><label for="p2C">(C) 13</label></td>
+                                    <td><input type="radio" id="p2D" name="p2" value="D"><label for="p2D">(D) 12</label></td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+    
+                        <div class="exp" id="exp2"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que3">
+                            <table class="q3">
+                                <tr>
+                                    <td colspan="2"><h3>如圖，已知坐標平面上，A(2,3)、B(5,7)兩點，求<span class="line">AB</span>的長</h3>
+                                    <img src="5.png" alt=""></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p3A" name="p3" value="A"><label for="p3A">(A) 5</label></td>
+                                    <td><input type="radio" id="p3B" name="p3" value="B"><label for="p3B">(B) 6</label></td>   
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p3C" name="p3" value="C"><label for="p3C">(C) 7</label></td>
+                                    <td><input type="radio" id="p3D" name="p3" value="D"><label for="p3D">(D) 8</label></td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+    
+                        <div class="exp" id="exp3"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que4">
+                            <table class="q4">
+                                <tr>
+                                    <td colspan="2"><h3>三角形ABC為一直角三角形,<span class="line">AB</span>=15,<span class="line"> AC</span>=20,請問<span class="line"> AD</span>的長度為多少?</h3>
+                                    <img src="1.png" alt=""></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p4A" name="p4" value="A"><label for="p4A">(A) 17</label></td>
+                                    <td><input type="radio" id="p4B" name="p4" value="B"><label for="p4B">(B) 14</label></td>   
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p4C" name="p4" value="C"><label for="p4C">(C) 12</label></td>
+                                    <td><input type="radio" id="p4D" name="p4" value="D"><label for="p4D">(D) 16</label></td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+    
+                        <div class="exp" id="exp4"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que5">
+                            <table class="q5">
+                                <tr>
+                                    <td colspan="2"><h3>垂直於地面的旗杆上，有一條繩子從旗杆頭垂下，已知繩子比旗杆的高多出1公尺，若將此繩尾沿著地面向外移動7公尺後，可將繩子拉直，則旗杆的高是多少公尺?</h3>
+                                    <img src="9.png" alt=""></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p5A" name="p5" value="A"><label for="p5A">(A) 20</label></td>
+                                    <td><input type="radio" id="p5B" name="p5" value="B"><label for="p5B">(B) 22</label></td>   
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p5C" name="p5" value="C"><label for="p5C">(C) 24</label></td>
+                                    <td><input type="radio" id="p5D" name="p5" value="D"><label for="p5D">(D) 26</label></td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+    
+                        <div class="exp" id="exp5"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que6">
+                            <table class="q6">
+                                <tr>
+                                    <td colspan="2"><h3>已知一直角三角形，其中斜邊為25，下列何者可能為其兩股?</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p6A" name="p6" value="A"><label for="p6A">(A) 10、16</label></td>
+                                    <td><input type="radio" id="p6B" name="p6" value="B"><label for="p6B">(B) 13、13</label></td>   
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p6C" name="p6" value="C"><label for="p6C">(C) 20、24</label></td>
+                                    <td><input type="radio" id="p6D" name="p6" value="D"><label for="p6D">(D) 7、24</label></td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+    
+                        <div class="exp" id="exp6"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que7">
+                            <table class="q7">
+                                <tr>
+                                    <td colspan="2"><h3>圖為一直角三角形，求出第三邊a的長度</h3>
+                                        <img src="3.png" alt="">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p7A" name="p7" value="A"><label for="p7A">(A) 15</label></td>
+                                    <td><input type="radio" id="p7B" name="p7" value="B"><label for="p7B">(B) 16</label></td>   
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p7C" name="p7" value="C"><label for="p7C">(C) 17</label></td>
+                                    <td><input type="radio" id="p7D" name="p7" value="D"><label for="p7D">(D) 18</label></td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+    
+                        <div class="exp" id="exp7"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que8">
+                            <table class="q8">
+                                <tr>
+                                    <td colspan="2"><h3>直角三角形的斜邊長為30公分，一股長為24公分，請問另一股長是幾公分?</h3>
+                                    <img src="7.png" alt=""></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p8A" name="p8" value="A"><label for="p8A">(A) 15</label></td>
+                                    <td><input type="radio" id="p8B" name="p8" value="B"><label for="p8B">(B) 16</label></td>   
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p8C" name="p8" value="C"><label for="p8C">(C) 17</label></td>
+                                    <td><input type="radio" id="p8D" name="p8" value="D"><label for="p8D">(D) 18</label></td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+    
+                        <div class="exp" id="exp8"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que9">
+                            <table class="q9">
+                                <tr>
+                                    <td colspan="2"><h3>電視機的尺寸指的是電視螢幕面板對角線的長度。今有一臺25吋的電視，其螢幕面板的長寬比為4：3，則此電視螢幕面板長為幾吋?</h3></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p9A" name="p9" value="A"><label for="p9A">(A) 20</label></td>
+                                    <td><input type="radio" id="p9B" name="p9" value="B"><label for="p9B">(B) 23</label></td>   
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p9C" name="p9" value="C"><label for="p9C">(C) 21</label></td>
+                                    <td><input type="radio" id="p9D" name="p9" value="D"><label for="p9D">(D) 25</label></td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+    
+                        <div class="exp" id="exp9"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que10">
+                            <table class="q10">
+                                <tr>
+                                    <td colspan="2"><h3>已知正方形ABCD的對角線長為7&#8730<span class="line">2</span>，求正方形ABCD的邊長是多少?</h3>
+                                    <img src="11.png" alt="">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p10A" name="p10" value="A"><label for="p10A">(A) 5</label></td>
+                                    <td><input type="radio" id="p10B" name="p10" value="B"><label for="p10B">(B) 6</label></td>   
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" id="p10C" name="p10" value="C"><label for="p10C">(C) 7</label></td>
+                                    <td><input type="radio" id="p10D" name="p10" value="D"><label for="p10D">(D) 8</label></td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+    
+                        <div class="exp" id="exp10"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que11">
+                            <table class="q11">
+                                <tr>
+                                    <td colspan="2"><h3>已知一直角三角形，斜邊為17公分，一股為8公分，則另一股為多少?</h3></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p11Answer" name="p11Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp11"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que12">
+                            <table class="q12">
+                                <tr>
+                                    <td colspan="2"><h3>已知一直角三角形，一股為5公分，另一股為12，則斜邊為多少?</h3>
+                                    
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p12Answer" name="p12Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp12"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que13">
+                            <table class="q13">
+                                <tr>
+                                    <td colspan="2"><h3>已知一直角三角形，斜邊為25公分，一股為7公分，則另一股為多少?</h3>
+                                    
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p13Answer" name="p13Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp13"></div>
+                    </div>
+                    
+                    <div class="queDiv">
+                        <div class="que" id="que14">
+                            <table class="q14">
+                                <tr>
+                                    <td colspan="2"><h3>已知一等腰直角三角形，斜邊為5&#8730<span class="line">2</span>公分，則其三角形的腰為多少?</h3></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p14Answer" name="p14Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp14"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que15">
+                            <table class="q15">
+                                <tr>
+                                    <td colspan="2"><h3>已知一等腰直角三角形，其腰為&#8730<span class="line">2</span>公分，則其斜邊為多少?</h3></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p15Answer" name="p15Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp15"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que16">
+                            <table class="q16">
+                                <tr>
+                                    <td colspan="2"><h3>直角坐標平面上有 E(-3 , 6)、F(5 , 6)、G(-3 , -1)三點,則:<span class="line">EF</span>=?</h3></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p16Answer" name="p16Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp16"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que17">
+                            <table class="q17">
+                                <tr>
+                                    <td colspan="2"><h3>直角坐標平面上有 E(-3 , 6)、F(5 , 6)、G(-3 , -1)三點,則:<span class="line">EG</span>=?</h3></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p17Answer" name="p17Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp17"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que18">
+                            <table class="q18">
+                                <tr>
+                                    <td colspan="2"><h3>直角坐標平面上有 P(5 , 2)、Q(8 , 2)、R(8 , -4)三點,則:<span class="line">PQ</span>=?</h3></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p18Answer" name="p18Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp18"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que19">
+                            <table class="q19">
+                                <tr>
+                                    <td colspan="2"><h3>直角坐標平面上有 P(5 , 2)、Q(8 , 2)、R(8 , -4)三點,則:<span class="line">QR</span>=?</h3></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p19Answer" name="p19Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp19"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que20">
+                            <table class="q20">
+                                <tr>
+                                    <td colspan="2"><h3>在直角坐標平面上,有 A(5 , 5)、B(8 , 1)、C(2 , 1)三點,連接<span class="line">AB</span>、<span class="line">BC</span>、<span class="line">AC</span>,則:三角形 ABC 為_______三角形。(填入正、等腰或直角)</h3></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p20Answer" name="p20Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp20"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que21">
+                            <table class="q21">
+                                <tr>
+                                    <td colspan="2"><h3>如右圖，ABCD為一矩形，若<span class="line">BD</span>=25，則以矩形四邊為邊長，向外所做的正方形甲、乙、丙、丁的面積和為多少?
+                                    </h3><img src="27.png" alt=""></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p21Answer" name="p21Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp21"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que22">
+                            <table class="q22">
+                                <tr>
+                                    <td colspan="2"><h3>如右圖，在三角形ABC中，<span class="line">AB</span>=10，<span class="line">BC</span>=21，<span class="line">AC</span>=17，則<span class="line">BE</span>=?
+                                    </h3><img src="29.png" alt=""></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p22Answer" name="p22Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp22"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que23">
+                            <table class="q23">
+                                <tr>
+                                    <td colspan="2"><h3>如右圖，在三角形ABC中，<span class="line">AB</span>=10，<span class="line">BC</span>=21，<span class="line">AC</span>=17，則三角形ABC的面積為何?
+                                    </h3><img src="29.png" alt=""></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p23Answer" name="p23Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp23"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que24">
+                            <table class="q24">
+                                <tr>
+                                    <td colspan="2"><h3>一長方形的周長為 28 公分,長比寬多 2 公分,則對角線的長度為多少公分?
+                                    </h3></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p24Answer" name="p24Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp24"></div>
+                    </div>
+
+                    <div class="queDiv">
+                        <div class="que" id="que25">
+                            <table class="q25">
+                                <tr>
+                                    <td colspan="2"><h3>小美將一長2.5公尺的梯子，靠在一垂直的牆上，此時梯腳離牆角0.7公尺，若小美將梯頂下移0.4公尺，則此時梯腳向外移動多少公尺?
+                                    </h3></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><input type="text" id="p25Answer" name="p25Answer" placeholder="請填入正確答案"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    
+                        <div class="exp" id="exp25"></div>
+                    </div>
+
+                    
+
+                    
+                </div>
+            <button id="submit" onclick="submitAns();">提交答案</button>
+        </main>
+    </body>
+</html>

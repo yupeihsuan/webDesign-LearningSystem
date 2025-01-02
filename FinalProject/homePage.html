@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>首頁</title>
+    <link rel="stylesheet" href="homePage.css">
+</head>
+<body>
+    <header>
+        <div class="menu">
+            <ul class="drop-down-menu">
+                <li><a href="homePage.html">首頁</a></li>
+                <li><a href="totalClass.html">課程</a>
+                    <ul>
+                        <li><a href="">發現畢氏定理</a>
+                            <ul>
+                                <li><a href="ch11.html">直角三角形的定義及名稱</a></li>
+                                <li><a href="ch12.html">畢氏定理(或商高定理、勾股定理)</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">畢氏定理的應用</a>
+                            <ul>
+                                <li><a href="ch21.html">利用畢氏定理求矩形的對角線長</a></li>
+                                <li><a href="ch22.html">直角三角形斜邊上的高</a></li>
+                                <li><a href="ch23.html">畢氏定理的生活應用</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">直角坐標平面上兩點的距離公式</a>
+                            <ul>
+                                <li><a href="ch31.html">數線上的兩點距離</a></li>
+                                <li><a href="ch32.html">直角座標平面上兩點的距離</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="exercise1.html">練習區</a>
+                    <ul>
+                        <li><a href="exercise1.html">發現畢氏定理</a></li>
+                        <li><a href="exercise2.html">畢氏定理的應用</a></li>
+                        <li><a href="exercise3.html">直角坐標平面上兩點的距離公式</a></li>
+                    </ul>
+                </li>
+                <li><a href="challenge.html">挑戰區</a></li>
+
+                <li><a href="feedback.html">學習回饋</a></li>
+                <li><a href=""></a></li>
+                
+            </ul>
+        </div>
+        <div class="username-display" id="usernameDisplay">
+            <img src="profile.png" alt="使用者圖片">
+            <div class="dropdown">
+                <span id="usernameText">使用者</span>
+                <ul class="dropdown-menu">
+                    <li><a href="#" onclick="logoutUser();">登出</a></li>
+                </ul>
+            </div>
+        </div>
+        
+    </header>
+    
+    <main>
+        <section class="intro">
+            <h1>歡迎來到學習系統</h1>
+            <p>探索課程、挑戰自我，提升學習能力</p>
+            <button onclick="goToClass();">開始學習</button>
+        </section>
+
+        <section class="classRec">
+            <div class="introClass">
+                <div class="content">
+                    <h4>📚課程總覽</h4>
+                    <p>瀏覽所有課程，選擇你想學習的單元</p>
+                    <button onclick="viewClass(1);">查看課程</button>
+                </div>
+
+                <div class="content">
+                    <h4>✏️練習區</h4>
+                    <p>提供各式練習題，幫助你學習</p>
+                    <button onclick="viewClass(2);">前往練習</button>
+                </div>
+
+                <div class="content">
+                    <h4>🏆挑戰區</h4>
+                    <p>更具挑戰性的題目，幫助你提升實力</p>
+                    <button onclick="viewClass(3);">前往挑戰</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>動態網頁設計期末專題-U11216004余珮璇 / <a href="sourcePage.html">資料來源</a></p>
+    </footer>
+    
+
+    <script>
+        // 從 localStorage 取得使用者名稱並顯示
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        const usernameText = document.getElementById("usernameText");
+        usernameText.textContent = loggedInUser;
+
+        function goToClass(){
+            window.location.href = "totalClass.html";
+        }
+
+        function logoutUser() {
+            window.location.href = "userLogin.html";
+        }
+
+        function viewClass(courseId) {
+            if(courseId==1)
+            window.location.href="course.html";
+            else if(courseId==2)
+            window.location.href="exercise1.html";
+            else
+            window.location.href="challenge.html"
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>學習回饋</title>
+    <link rel="stylesheet" href="feedback.css">
+</head>
+<body>
+    <header>
+        <div class="menu">
+            <ul class="drop-down-menu">
+                <li><a href="homePage.html">首頁</a></li>
+                <li><a href="totalClass.html">課程</a>
+                    <ul>
+                        <li><a href="">發現畢氏定理</a>
+                            <ul>
+                                <li><a href="ch11.html">直角三角形的定義及名稱</a></li>
+                                <li><a href="ch12.html">畢氏定理(或商高定理、勾股定理)</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">畢氏定理的應用</a>
+                            <ul>
+                                <li><a href="ch21.html">利用畢氏定理求矩形的對角線長</a></li>
+                                <li><a href="ch22.html">直角三角形斜邊上的高</a></li>
+                                <li><a href="ch23.html">畢氏定理的生活應用</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">直角坐標平面上兩點的距離公式</a>
+                            <ul>
+                                <li><a href="ch31.html">數線上的兩點距離</a></li>
+                                <li><a href="ch32.html">直角座標平面上兩點的距離</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="exercise1.html">練習區</a>
+                    <ul>
+                        <li><a href="exercise1.html">發現畢氏定理</a></li>
+                        <li><a href="exercise2.html">畢氏定理的應用</a></li>
+                        <li><a href="exercise3.html">直角坐標平面上兩點的距離公式</a></li>
+                    </ul>
+                </li>
+                <li><a href="challenge.html">挑戰區</a></li>
+
+                <li><a href="feedback.html">學習回饋</a></li>
+            </ul>
+        </div>
+        <div class="username-display" id="usernameDisplay">
+            <img src="profile.png" alt="使用者圖片">
+            <div class="dropdown">
+                <span id="usernameText">使用者</span>
+                <ul class="dropdown-menu">
+                    <li><a href="#" onclick="logoutUser();">登出</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="box">
+            <div class="content">
+                <h2>學習回饋</h2>
+                <hr>
+                <h3>使用者資料：</h3>
+                <ul class="situation">
+                    <li id="name">使用者名稱：</li>
+                    <li id="time">登入時間：</li>
+                </ul>
+                <h3>學習進度：</h3>
+                <table>
+                    <tr>
+                        <th rowspan="7">課程區</th>
+                        <td><a href="ch11.html">直角三角形的定義及名稱</a></td>
+                        <td class="status" id="class1">未完成</td>
+                    </tr>
+                    <tr>
+                        <td><a href="ch12.html">畢氏定理(或商高定理、勾股定理)</a></td>
+                        <td class="status" id="class2">未完成</td>
+                    </tr>
+                    <tr>
+                        <td><a href="ch21.html">利用畢氏定理求矩形的對角線長</a></td>
+                        <td class="status" id="class3">未完成</td>
+                    </tr>
+                    <tr>
+                        <td><a href="ch22.html">直角三角形斜邊上的高</a></td>
+                        <td class="status" id="class4">未完成</td>
+                    </tr>
+                    <tr>
+                        <td><a href="ch23.html">畢氏定理的生活應用</a></td>
+                        <td class="status" id="class5">未完成</td>
+                    </tr>
+                    <tr>
+                        <td><a href="ch31.html">數線上的兩點距離</a></td>
+                        <td class="status" id="class6">未完成</td>
+                    </tr>
+                    <tr>
+                        <td><a href="ch32.html">直角座標平面上兩點的距離</a></td>
+                        <td class="status" id="class7">未完成</td>
+                    </tr>
+                </table>
+                <br>
+                <table>
+                    <tr>
+                        <th rowspan="3">練習區</th>
+                        <td><a href="exercise1.html">發現畢氏定理</a></td>
+                        <td class="status" id="ex1">未完成</td>
+                    </tr>
+                    <tr>
+                        <td><a href="exercise2.html">畢氏定理的應用</a></td>
+                        <td class="status" id="ex2">未完成</td>
+                    </tr>
+                    <tr>
+                        <td><a href="exercise3.html">直角坐標平面上兩點的距離公式</a></td>
+                        <td class="status" id="ex3">未完成</td>
+                    </tr>
+                </table>
+                <br>
+                <table>
+                    <tr>
+                        <th>挑戰區</th>
+                        <td><a href="challenge.html">測驗題</a></td>
+                        <td class="status" id="test">未完成</td>
+                    </tr>
+                    
+                </table>
+                <h3>補充教材：</h3>
+                <ul class="extendClass">
+                    <li><a href="https://www.youtube.com/watch?v=tijI0c91D7U">【觀念】畢氏定理的發現</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=1FHxJOk-_6o&t=1s">【觀念】畢氏定理的應用：基礎</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=rvyPPh5hZF8&t=1s">【觀念】畢氏定理的應用：進階</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=0ySnFo8p9VI">【觀念】兩點距離公式與應用</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=_ZIJkeJ5pPs">【解題】利用畢氏定理求矩形的對角線長</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=T2VE05ou_Cw">【解題】利用畢氏定理求直角三角形的邊長</a></li>
+                    <li><a href="https://www.youtube.com/watch?v=glKEHRVtkP4">【解題】正三角形的高和面積</a></li>
+                </ul>
+    
+                <div class="btn">
+                    <button onclick="retry();">返回首頁</button>
+                    <button onclick="back();">結束學習</button>
+                </div>
+            </div>
+            
+            
+        </div> 
+    </main>
+    
+
+    <script>
+        // 從 localStorage 取得使用者名稱並顯示
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        const loginTime = localStorage.getItem("loginTime");
+        
+        const ex1=localStorage.getItem("exercise1Completed");
+        const ex2=localStorage.getItem("exercise2Completed");
+        const ex3=localStorage.getItem("exercise3Completed");
+
+        const ch11=localStorage.getItem("ch11");
+        const ch12=localStorage.getItem("ch12");
+        const ch21=localStorage.getItem("ch21");
+        const ch22=localStorage.getItem("ch22");
+        const ch23=localStorage.getItem("ch23");
+        const ch31=localStorage.getItem("ch31");
+        const ch32=localStorage.getItem("ch32");
+
+        const finishedTest=localStorage.getItem("finishedTest");
+
+
+        if(ex1=='true'){
+            document.getElementById("ex1").innerHTML="完成";
+            document.getElementById("ex1").style.color="#3c763d";
+            document.getElementById("ex1").style.backgroundColor="#dff0d8";
+        }
+
+        if(ex2=='true'){
+            document.getElementById("ex2").innerHTML="完成";
+            document.getElementById("ex2").style.color="#3c763d";
+            document.getElementById("ex2").style.backgroundColor="#dff0d8";
+        }
+
+        if(ex3=='true'){
+            document.getElementById("ex3").innerHTML="完成";
+            document.getElementById("ex3").style.color="#3c763d";
+            document.getElementById("ex3").style.backgroundColor="#dff0d8";
+        }
+
+        if(ch11=='true'){
+            document.getElementById("class1").innerHTML="完成";
+            document.getElementById("class1").style.color="#3c763d";
+            document.getElementById("class1").style.backgroundColor="#dff0d8";
+        }
+
+        if(ch12=='true'){
+            document.getElementById("class2").innerHTML="完成";
+            document.getElementById("class2").style.color="#3c763d";
+            document.getElementById("class2").style.backgroundColor="#dff0d8";
+        }
+
+        if(ch21=='true'){
+            document.getElementById("class3").innerHTML="完成";
+            document.getElementById("class3").style.color="#3c763d";
+            document.getElementById("class3").style.backgroundColor="#dff0d8";
+        }
+
+        if(ch22=='true'){
+            document.getElementById("class4").innerHTML="完成";
+            document.getElementById("class4").style.color="#3c763d";
+            document.getElementById("class4").style.backgroundColor="#dff0d8";
+        }
+
+        if(ch23=='true'){
+            document.getElementById("class5").innerHTML="完成";
+            document.getElementById("class5").style.color="#3c763d";
+            document.getElementById("class5").style.backgroundColor="#dff0d8";
+        }
+
+
+        if(ch31=='true'){
+            document.getElementById("class6").innerHTML="完成";
+            document.getElementById("class6").style.color="#3c763d";
+            document.getElementById("class6").style.backgroundColor="#dff0d8";
+        }
+
+        if(ch32=='true'){
+            document.getElementById("class7").innerHTML="完成";
+            document.getElementById("class7").style.color="#3c763d";
+            document.getElementById("class7").style.backgroundColor="#dff0d8";
+        }
+
+        if(finishedTest=='true'){
+            document.getElementById("test").innerHTML="完成";
+            document.getElementById("test").style.color="#3c763d";
+            document.getElementById("test").style.backgroundColor="#dff0d8";
+        }
+
+        document.getElementById("usernameText").innerHTML = loggedInUser;
+        document.getElementById('name').innerHTML+=loggedInUser;
+        document.getElementById('time').innerHTML+=loginTime;
+
+        function retry(){
+            window.location.href="homePage.html";
+        }
+
+        function back(){
+            alert("感謝使用!")
+            window.location.href="userLogin.html";
+        }
+
+        function logoutUser() {
+            window.location.href = "userLogin.html";
+        }
+        
+    </script>
+</body>
+</html>

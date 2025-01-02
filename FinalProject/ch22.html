@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>課程內容</title>
+    <link rel="stylesheet" href="ch2_3_1.css">
+</head>
+<body>
+    <header>
+        <div class="menu">
+            <ul class="drop-down-menu">
+                <li><a href="homePage.html">首頁</a></li>
+                <li><a href="totalClass.html">課程</a>
+                    <ul>
+                        <li><a href="">發現畢氏定理</a>
+                            <ul>
+                                <li><a href="ch11.html">直角三角形的定義及名稱</a></li>
+                                <li><a href="ch12.html">畢氏定理(或商高定理、勾股定理)</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">畢氏定理的應用</a>
+                            <ul>
+                                <li><a href="ch21.html">利用畢氏定理求矩形的對角線長</a></li>
+                                <li><a href="ch22.html">直角三角形斜邊上的高</a></li>
+                                <li><a href="ch23.html">畢氏定理的生活應用</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">直角坐標平面上兩點的距離公式</a>
+                            <ul>
+                                <li><a href="ch31.html">數線上的兩點距離</a></li>
+                                <li><a href="ch32.html">直角座標平面上兩點的距離</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="exercise1.html">練習區</a>
+                    <ul>
+                        <li><a href="exercise1.html">發現畢氏定理</a></li>
+                        <li><a href="exercise2.html">畢氏定理的應用</a></li>
+                        <li><a href="exercise3.html">直角坐標平面上兩點的距離公式</a></li>
+                    </ul>
+                </li>
+                <li><a href="challenge.html">挑戰區</a></li>
+
+                <li><a href="feedback.html">學習回饋</a></li>
+            </ul>
+        </div>
+        <div class="username-display" id="usernameDisplay">
+            <img src="profile.png" alt="使用者圖片">
+            <div class="dropdown">
+                <span id="usernameText">使用者</span>
+                <ul class="dropdown-menu">
+                    <li><a href="#" onclick="logoutUser();">登出</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <div class="sidebar">
+        <h3>2-3畢氏定理</h3>
+        <h4><a onclick="toclass('ch1')">發現畢氏定理</a></h4>
+        <div id="ch1" class="submenu">
+            <a name="ch11" href="ch11.html">直角三角形的定義及名稱</a><br><br>
+            <a name="ch12" href="ch12.html">畢氏定理(或商高定理、勾股定理)</a><br><br>
+        </div>
+
+        <h4><a onclick="toclass('ch2')">畢氏定理的應用</a></h4>
+        <div id="ch2" class="submenu">
+            <a name="ch21" href="ch21.html">利用畢氏定理求矩形的對角線長</a><br><br>
+            <a name="ch22" href="ch22.html">直角三角形斜邊上的高</a><br><br>
+            <a name="ch23" href="ch23.html">畢氏定理的生活應用</a><br><br>
+        </div>
+
+        <h4><a onclick="toclass('ch3')">直角坐標平面上兩點的距離公式</a></h4>
+        <div id="ch3" class="submenu">
+            <a name="ch31" href="ch31.html">數線上的兩點距離</a><br><br>
+            <a name="ch32" href="ch32.html">直角座標平面上兩點的距離</a><br><br>
+        </div>
+    </div>
+
+    <main>
+        <div class="box">
+            <div class="content">
+                
+                <div id="ch11" class="content-section">
+                    <h3>畢氏定理的應用</h3>
+                    <hr><h4>直角三角形斜邊上的高</h4>
+                </div>
+
+                <div class="area">
+                    <div class="statement" id="dynamicText">
+                        <p></p>
+                    </div>
+
+                    <div>
+                        <canvas id="myCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn">
+                <button id="prev" onclick="prevStep();">上一步</button>
+                <button id="next" onclick="nextStep()">下一步</button>
+                <button id="auto" onclick="toggleAutoPlay()">自動播放</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+
+        const steps = [
+            "以下用一個例題來講解",
+            "直角三角形ABC中，&#8736;ABC為直角<br>且<span class='line'>AB</span> = 7，<span class='line'>AC</span> = 25",
+            "若<span class='line'>BD</span>為斜邊上的高，則<span class='line'>BD</span> = ?",
+            "因為直角三角形ABC的面積 = 1/2 × <span class='line'>AB</span> × <span class='line'>BC</span> = 1/2 × <span class='line'>AC</span> × <span class='line'>BD</span><br>所以 1/2 × 7 × 24 = 1/2 × 25 × <span class='line'>BD</span>，<br>即 <span class='line'>BD</span> = (7 × 24) / 25 = 168/25",
+            "公式：斜邊上的高 = 兩股乘積 / 斜邊",
+            "步驟已結束"
+        ];
+
+        var currentStep = 0;
+        var autoPlayInterval = null;
+        const dynamicText = document.getElementById("dynamicText");
+        const canvas = document.getElementById("myCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // 初始化畫布
+        function drawInitialTriangle() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // 動態步驟更新
+        function updateStep() {
+            dynamicText.querySelector("p").innerHTML = steps[currentStep];
+            drawStep(currentStep);
+        }
+
+        function drawStep(step) {
+            drawInitialTriangle();
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "black";
+
+            if (step === 1) { 
+                ctx.beginPath();
+                ctx.moveTo(50, 120); 
+                ctx.lineTo(80, 30); 
+                ctx.lineTo(210, 120); 
+                ctx.closePath();
+                ctx.stroke();
+
+                ctx.fillText("B", 80, 20);
+                ctx.fillText("A", 35, 140);
+                ctx.fillText("C", 210, 140);
+                
+                ctx.beginPath();
+                ctx.moveTo(80,30 ); 
+                ctx.lineTo(80, 120); 
+                ctx.stroke();
+                ctx.fillText("D", 80, 140);
+
+                
+            } else if (step === 2) { // 標記股
+                ctx.beginPath();
+                ctx.moveTo(50, 120); 
+                ctx.lineTo(80, 30); 
+                ctx.lineTo(210, 120); 
+                ctx.closePath();
+                ctx.stroke();
+
+                ctx.fillText("B", 80, 20);
+                ctx.fillText("A", 35, 140);
+                ctx.fillText("C", 210, 140);
+                
+                ctx.beginPath();
+                ctx.strokeStyle = "red";
+                ctx.moveTo(80,30 ); 
+                ctx.lineTo(80, 120); 
+                ctx.stroke();
+                ctx.fillText("D", 80, 140);
+
+            } else if (step === 3) { // 標記等腰直角三角形
+                ctx.beginPath();
+                ctx.strokeStyle = "green";
+                ctx.moveTo(50, 120); 
+                ctx.lineTo(80, 30); 
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.strokeStyle = "green";
+                ctx.moveTo(80, 30);
+                ctx.lineTo(210, 120); 
+                ctx.stroke();
+
+                ctx.fillText("B", 80, 20);
+                ctx.fillText("A", 35, 140);
+                ctx.fillText("C", 210, 140);
+                
+                ctx.beginPath();
+                ctx.strokeStyle = "red";
+                ctx.moveTo(50, 120);
+                ctx.lineTo(210, 120); 
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.strokeStyle = "red";
+                ctx.moveTo(80,30 ); 
+                ctx.lineTo(80, 120); 
+                ctx.stroke();
+                ctx.fillText("D", 80, 140);
+            }
+        }
+
+        // 切換步驟
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                updateStep();
+            }
+
+            if(currentStep==steps.length-1)
+            localStorage.setItem('ch22',true);
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateStep();
+            }
+        }
+
+        // 自動播放
+        function toggleAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            } else {
+                autoPlayInterval = setInterval(() => {
+                    if (currentStep < steps.length - 1) {
+                        nextStep();
+                    } else {
+                        clearInterval(autoPlayInterval);
+                        autoPlayInterval = null;
+                    }
+                }, 3000); // 每 3 秒切換一步
+            }
+        }
+
+        // 初始顯示
+        drawInitialTriangle();
+        updateStep();
+
+        // 從 localStorage 取得使用者名稱並顯示
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        const usernameText = document.getElementById("usernameText");
+        usernameText.textContent = loggedInUser;
+
+        function toclass(chId){
+            const submenu = document.getElementById(chId);
+            submenu.classList.toggle('active'); // 切換顯示或隱藏
+        }
+
+        function logoutUser() {
+            window.location.href = "userLogin.html";
+        }
+
+    </script>
+</body>
+</html>

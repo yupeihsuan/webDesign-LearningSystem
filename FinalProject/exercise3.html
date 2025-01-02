@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>2-3-3練習題</title>
+    <link rel="stylesheet" href="exercise.css">
+    <script>
+        function logoutUser() {
+            window.location.href = "userLogin.html";
+        }
+        
+        //題目、圖片、答案
+        const questions = [
+            {
+                type: "radio_check",
+                question: '如圖，已知坐標平面上，A(3,2)、B(-5,2)、C(3,4)三點，求<span class="line">AC</span>的長',
+                img: "14.png",
+                options:["(A) 4","(B) 5","(C) 6","(D) 7"],
+                answer: ["(C) 6"],
+                hint:[
+                    "1.<span class='line'>AC</span> = |2-(-4)| = 6"                ]
+            },
+            {
+                type: "radio_check",
+                question: '如圖，已知坐標平面上，A(2,3)、B(5,7)兩點，求<span class="line">AB</span>的長',
+                img: "5.png",
+                options:["(A) 5","(B) 6","(C) 7","(D) 8"],
+                answer: ["(A) 5"],
+                hint:[
+                    "1.<span class='line'>AB</span> = &#8730<span class='line'>(2-5)&sup2 + (3-7)&sup2</span> = 5",
+                    "<hr>公式：<span class='line'>AB</span>&sup2 = (X1 - X2)&sup2 + (Y1 - Y2)&sup2"
+                ]
+            },
+            {
+                type: "radio_check",
+                question: '如圖，坐標平面上有三點A(3,3)、B(3,-5)、C(-4,-5)，請問：A、B兩點之間的距離為何?',
+                img: "16.png",
+                options:["(A) 8","(B) 9","(C) 10","(D) 11"],
+                answer: ["(A) 8"],
+                hint: [
+                    "1.A、B兩點的距離 =  &#8730<span class='line'>(3-3)&sup2 + [3-(-5)]&sup2</span> = 8",
+                    "<hr>公式：<span class='line'>AB</span>&sup2 = (X1 - X2)&sup2 + (Y1 - Y2)&sup2"
+                ]
+            },
+            {
+                type: "radio_check",
+                question: '如圖，坐標平面上有三點A(3,3)、B(3,-5)、C(-4,-5)，請問：B、C兩點之間的距離為何?',
+                img: "16.png",
+                options:["(A) 9","(B) 8","(C) 7","(D) 6"],
+                answer: ["(C) 7"],
+                hint: [
+                    "1.B、C兩點的距離 =  &#8730<span class='line'>[3-(-4)]&sup2 + [(-5)-(-5)]&sup2</span> = 7",
+                    "<hr>公式：<span class='line'>AB</span>&sup2 = (X1 - X2)&sup2 + (Y1 - Y2)&sup2"
+                ]
+            },
+            {
+                type: "radio_check",
+                question: '如圖，已知坐標平面上，A(8,12)、B(20,28)兩點，求<span class="line">AB</span>的長',
+                img: "5.png",
+                options:["(A) 20","(B) 21","(C) 22","(D) 23"],
+                answer: ["(A) 20"],
+                hint:[
+                    "1.<span class='line'>AB</span> = &#8730<span class='line'>(20-8)&sup2 + (28-12)&sup2</span> = 20",
+                    "<hr>公式：<span class='line'>AB</span>&sup2 = (X1 - X2)&sup2 + (Y1 - Y2)&sup2"
+                ]
+            },
+            {
+                type: "radio_check",
+                question: '在坐標平面上,下列哪一個點和原點的距離最遠?',
+                img: "30.jpg",
+                options:["(A) (-2 , 5)","(B) (1 , -6)","(C) (-3 , -4)","(D) (4 , 3)"],
+                answer: ["(B) (1 , -6)"],
+                hint:[
+                    "1.公式：d = &#8730<span class='line'>(X1 - X2)&sup2 + (Y1 - Y2)&sup2</span>",
+                    "(A) d = &#8730<span class='line'>[(-2) - 0]&sup2 + (5 - 0)&sup2</span> = &#8730<span class='line'>29</span>",
+                    "(B) d = &#8730<span class='line'>(1 - 0)&sup2 + [(-6) - 0]&sup2</span> = &#8730<span class='line'>37</span>",
+                    "(A) d = &#8730<span class='line'>[(-3) - 0]&sup2 + [(-4) - 0]&sup2</span> = &#8730<span class='line'>25</span>",
+                    "(A) d = &#8730<span class='line'>(4 - 0)&sup2 + (3 - 0)&sup2</span> = &#8730<span class='line'>25</span>"
+                ]
+            }
+            
+
+        ];
+
+        //出題模式
+        var index=0;
+        var score=0;
+        
+        var recordQue=[];   //預設題目為未作答
+        for(var i=0;i<questions.length;i++){
+            recordQue.push(false);
+        }
+
+        var wrongQue=[];    //記錄錯誤題目
+
+        function showQue(){
+            const questionDiv=document.getElementById('que');
+            const picDiv=document.getElementById('pic');
+
+            let optionsHtml="";
+            if(questions[index].type=="radio_check"){
+                for(var i=0;i<questions[index].options.length;i++){
+                    var option=questions[index].options[i];
+                    optionsHtml+=`<label><input type="radio" name="question${index}" class="optionInput" value="${option}">${option}</label><br>`;
+                }
+            }
+
+            let inputHtml="";
+            if(questions[index].type=="text"){
+                inputHtml=`
+                <input type="text" id="ans" placeholder="輸入你的答案" ${recordQue[index]? 'disabled':''}>`;
+            }
+           
+            questionDiv.innerHTML=`
+                <h3>第${index+1}題：</h3>
+                <h4>${questions[index].question}</h4><br>
+                ${optionsHtml||inputHtml}
+                <button id="check" class="function_btn" onclick="checkAns();" ${recordQue[index]? 'disabled':''}>送出答案</button>
+                <button id="hint" class="function_btn" onclick="showHint();">提示</button>
+                <br><br><span id="fb"></span>
+            `;
+            picDiv.innerHTML=`<img class="imgQue" src="${questions[index].img}" alt="題目圖片">`;
+        }
+
+        function showHint(){
+            currentStep=0;
+            const modalHtml=`
+            <div id="hintModal" class="modal">
+                <div class="modalContent">
+                    <span class="close" onclick="closeModal();">&times;</span>
+                    <h4>解題過程</h4>
+                    <div id="hintStep">
+                        <ul id="hintStepList"></ul>
+                    </div>
+                    <button id="autoStep" class="modal_btn" onclick="autoStep();">逐步顯示</button>
+                    <button id="manualStep" class="modal_btn" onclick="nextStep();">下一步</button>
+                    <button id="clearStep" class="modal_btn" onclick="clearStep();">清除</button>
+                </div>
+            </div>
+            `;
+
+            const modalContainer=document.createElement('div');
+            modalContainer.innerHTML=modalHtml;
+            document.body.appendChild(modalContainer);
+
+            const hintList=document.getElementById('hintStepList');
+            hintList.innerHTML="";
+            for(var i=0;i<questions[index].hint.length;i++){
+                hintList.innerHTML+=`<li id="hintStep${i}">${questions[index].hint[i]}</li>`;
+            }
+        }
+
+        function clearStep(){
+            clearInterval(stepInterval);
+            currentStep=0;
+            
+            const hintList=document.getElementById('hintStepList');
+                if(hintList){
+                    for(var i=0;i<hintList.children.length;i++){
+                        hintList.children[i].style.display='none';
+                    }
+                }
+        }
+
+        function nextStep(){
+            const step=document.getElementById(`hintStep${currentStep}`);
+            if(step){
+                step.style.display='list-item';
+                currentStep++;
+            }else{
+                alert("已經是最後一步了!");
+            }
+        }
+
+        function closeModal(){
+            const modal=document.getElementById('hintModal');
+            if(modal){
+                modal.remove();
+            }
+        }
+
+        var currentStep=0;
+        var stepInterval;
+
+        function autoStep(){
+            currentStep=0;
+            clearInterval(stepInterval);
+
+            stepInterval=setInterval(()=>{
+                const step=document.getElementById(`hintStep${currentStep}`);
+                if(step){
+                    step.style.display='list-item';
+                    currentStep++;
+                }else{
+                    clearInterval(stepInterval);
+                }
+            },1500);
+        }
+
+
+        
+        var finishedQue=0;
+
+        function checkAns(){
+            const fb = document.getElementById('fb');
+            const progressCircles = document.querySelectorAll('.progress-circle');
+            
+            let userAns;
+            if(questions[index].type == "text" || questions[index].type == "textarea"){
+                userAns = document.getElementById('ans').value.trim();
+            } else if(questions[index].type == "singleList"){
+                userAns = document.getElementById('singleList').value;
+            } else {
+                const selectedOptions = Array.from(document.querySelectorAll('.optionInput:checked')).map(el => el.value);
+                userAns = selectedOptions;
+            }
+
+            if (questions[index].type == "radio_check") {
+                if (JSON.stringify(userAns.sort()) == JSON.stringify(questions[index].answer.sort())) {
+                    fb.style.color = "#4caf50";
+                    fb.innerHTML = '<img src="correct.jpg" class="fbImg">答對了!!!';
+                    document.getElementById('check').disabled = true;
+                    document.querySelectorAll('.optionInput').forEach(el => el.disabled = true);
+                    progressCircles[index].classList.add('correct');
+                    finishedQue++;
+                    
+                    // 儲存圓圈狀態到 localStorage
+                    localStorage.setItem(`circle${index}`, 'correct');
+
+                    if(finishedQue==questions.length){
+                        localStorage.setItem('exercise3Completed','true');
+                    }
+                } else {
+                    fb.style.color = "#f44336";
+                    fb.innerHTML = '<img src="wrong.jpg" class="fbImg">答錯了!!!';
+                    
+                    // 儲存圓圈狀態到 localStorage
+                    localStorage.setItem(`circle${index}`, 'wrong');
+                }
+            } else {
+                if (JSON.stringify(userAns) == JSON.stringify(questions[index].answer)) {
+                    fb.style.color = "#4caf50";
+                    fb.innerHTML = '<img src="correct.jpg" class="fbImg">答對了!!!';
+                    document.getElementById('check').disabled = true;
+                    document.querySelectorAll('.optionInput').forEach(el => el.disabled = true);
+                    progressCircles[index].classList.add('correct');
+                    finishedQue++;
+                    
+                    // 儲存圓圈狀態到 localStorage
+                    localStorage.setItem(`circle${index}`, 'correct');
+                } else {
+                    fb.style.color = "#f44336";
+                    fb.innerHTML = '<img src="wrong.jpg" class="fbImg">答錯了!!!';
+                    
+                    // 儲存圓圈狀態到 localStorage
+                    localStorage.setItem(`circle${index}`, 'wrong');
+                }
+            }
+
+            recordQue[index] = true;
+        }
+
+        function nextQue() {
+            document.getElementById('fb').innerHTML="";
+            if (index < questions.length - 1) {
+                index++;
+                showQue();
+            } else {
+                // 顯示完成按鈕
+                alert("作答完畢!可以前往下一個單元繼續學習");
+
+                document.getElementById("prevQue").style.display = "none"; 
+                document.getElementById("nextQue").style.display = "none"; 
+                document.getElementById("tryAgain").style.display = "block"; 
+                document.getElementById("finishBtn").style.display = "block"; 
+            }
+        }
+
+        function prevQue() {
+            if (index > 0) {
+                index--;
+                showQue();
+            }
+        }
+
+        //計時模式
+        var sec=0;
+        var timerId;
+
+        function countdown(){
+            sec++;
+            
+        }
+
+        function goToChallenge(){
+            window.location.href = "challenge.html";
+        }
+
+        function tryAgain(){
+            window.location.href = 'exercise3.html';
+        }
+
+        // 初始化進度條圓圈的顯示
+        function initializeProgressBar() {
+            const progressBar = document.getElementById('progressBar');
+            const progressCircles = [];
+            questions.forEach(() => {
+                const circle = document.createElement('div');
+                circle.className = 'progress-circle';
+                progressBar.appendChild(circle);
+                progressCircles.push(circle);
+            });
+
+            // 從 localStorage 讀取並更新圓圈的狀態
+            for (let i = 0; i < questions.length; i++) {
+                //const storedStatus = localStorage.getItem(`circle${i}`);
+                const circle = progressCircles[i];
+                if (storedStatus === 'correct') {
+                    circle.classList.add('correct');
+                } else if (storedStatus === 'wrong') {
+                    circle.classList.add('wrong');
+                }
+            }
+        }
+
+        window.onload = function() {
+            // 從 localStorage 取得使用者名稱並顯示
+
+            document.getElementById('usernameText').innerHTML = localStorage.getItem("loggedInUser");
+            showQue();
+            initializeProgressBar();
+
+            const isCompleted = localStorage.getItem('exercise3Completed');
+        };
+    </script>
+</head>
+    <body>
+        <header>
+            <div class="menu">
+                <ul class="drop-down-menu">
+                    <li><a href="homePage.html">首頁</a></li>
+                    <li><a href="totalClass.html">課程</a>
+                        <ul>
+                            <li><a href="">發現畢氏定理</a>
+                                <ul>
+                                    <li><a href="ch11.html">直角三角形的定義及名稱</a></li>
+                                    <li><a href="ch12.html">畢氏定理(或商高定理、勾股定理)</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="">畢氏定理的應用</a>
+                                <ul>
+                                    <li><a href="ch21.html">利用畢氏定理求矩形的對角線長</a></li>
+                                    <li><a href="ch22.html">直角三角形斜邊上的高</a></li>
+                                    <li><a href="ch23.html">畢氏定理的生活應用</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="">直角坐標平面上兩點的距離公式</a>
+                                <ul>
+                                    <li><a href="ch31.html">數線上的兩點距離</a></li>
+                                    <li><a href="ch32.html">直角座標平面上兩點的距離</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="exercise1.html">練習區</a>
+                        <ul>
+                            <li><a href="exercise1.html">發現畢氏定理</a></li>
+                            <li><a href="exercise2.html">畢氏定理的應用</a></li>
+                            <li><a href="exercise3.html">直角坐標平面上兩點的距離公式</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="challenge.html">挑戰區</a></li>
+
+                    <li><a href="feedback.html">學習回饋</a></li>
+                </ul>
+            </div>
+
+            
+            <div class="username-display" id="usernameDisplay">
+                <img src="profile.png" alt="使用者圖片">
+                <div class="dropdown">
+                    <span id="usernameText">使用者</span>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" onclick="logoutUser();">登出</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="box">
+                <div class="content">
+                    <h2>練習題3 - 直角坐標平面上兩點的距離公式</h2>
+                    <div class="feedback">
+                        <div id="progressBar" class="progress-bar"></div>
+                    </div>
+                    <hr>
+                    <div class="Question">
+                        <div id="que">題目</div>
+                        <div id="pic">圖片</div>
+                    </div>
+                    
+    
+                    <div class="btn">
+                        <button id="prevQue" onclick="prevQue();">上一題</button>
+                        <button id="nextQue" onclick="nextQue();">下一題</button>
+                        <button id="tryAgain" onclick="tryAgain();" style="display: none;">再練習一次</button>
+                        <button id="finishBtn" onclick="goToChallenge();" style="display: none;">前往挑戰區</button>
+                    </div>
+    
+                    
+                    
+                </div>
+            </div>
+
+            
+        </main>
+        
+
+        
+    </body>
+</html>

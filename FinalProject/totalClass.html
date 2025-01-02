@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>課程總覽</title>
+    <link rel="stylesheet" href="totalClass.css">
+</head>
+<body>
+    <header>
+        <div class="menu">
+            <ul class="drop-down-menu">
+                <li><a href="homePage.html">首頁</a></li>
+                <li><a href="totalClass.html">課程</a>
+                    <ul>
+                        <li><a href="">發現畢氏定理</a>
+                            <ul>
+                                <li><a href="ch11.html">直角三角形的定義及名稱</a></li>
+                                <li><a href="ch12.html">畢氏定理(或商高定理、勾股定理)</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">畢氏定理的應用</a>
+                            <ul>
+                                <li><a href="ch21.html">利用畢氏定理求矩形的對角線長</a></li>
+                                <li><a href="ch22.html">直角三角形斜邊上的高</a></li>
+                                <li><a href="ch23.html">畢氏定理的生活應用</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">直角坐標平面上兩點的距離公式</a>
+                            <ul>
+                                <li><a href="ch31.html">數線上的兩點距離</a></li>
+                                <li><a href="ch32.html">直角座標平面上兩點的距離</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="exercise1.html">練習區</a>
+                    <ul>
+                        <li><a href="exercise1.html">發現畢氏定理</a></li>
+                        <li><a href="exercise2.html">畢氏定理的應用</a></li>
+                        <li><a href="exercise3.html">直角坐標平面上兩點的距離公式</a></li>
+                    </ul>
+                </li>
+                <li><a href="challenge.html">挑戰區</a></li>
+
+                <li><a href="feedback.html">學習回饋</a></li>
+                <li><a href=""></a></li>
+                
+            </ul>
+        </div>
+        <div class="username-display" id="usernameDisplay">
+            <img src="profile.png" alt="使用者圖片">
+            <div class="dropdown">
+                <span id="usernameText">使用者</span>
+                <ul class="dropdown-menu">
+                    <li><a href="#" onclick="logoutUser();">登出</a></li>
+                </ul>
+            </div>
+        </div>
+        
+    </header>
+
+    <main>
+        <div class="box">
+            <div class="content">
+                <h2>【八上】第二章 平方根與畢氏定理</h2>
+                <hr>
+                
+                <h3>2-3 畢氏定理</h3>
+                <div class="contentBox">
+                    <ul>
+                        <li><a href="course.html">1.發現畢氏定理</a></li>
+                        <li><a href="course.html">2.畢氏定理的應用</a></li>
+                        <li><a href="course.html">3.直角坐標平面上兩點的距離公式</a></li>
+                    </ul>
+                    <button class="btn" onclick="goToClass();">查看課程</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+
+    <script>
+        // 從 localStorage 取得使用者名稱並顯示
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        const usernameText = document.getElementById("usernameText");
+        usernameText.textContent = loggedInUser;
+
+        function goToClass(){
+            window.location.href = "course.html";
+        }
+
+        function logoutUser() {
+            window.location.href = "userLogin.html";
+        }
+
+    </script>
+</body>
+</html>

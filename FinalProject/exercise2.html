@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>2-3-2練習題</title>
+    <link rel="stylesheet" href="exercise.css">
+    <script>
+
+        function logoutUser() {
+            window.location.href = "userLogin.html";
+        }
+        
+        //題目、圖片、答案
+        const questions = [
+            {
+                type: "radio_check",
+                question: '已知正方形ABCD的對角線長為7&#8730<span class="line">2</span>，求正方形ABCD的邊長是多少?',
+                img: "11.png",
+                options:["(A) 4","(B) 5","(C) 6","(D) 7"],
+                answer: ["(D) 7"],
+                hint:[
+                    "1.&#916 ABD是一個直角三角形，因此可以利用畢氏定理算出邊長的長度",
+                    "2.<span class='line'>BD</span>&sup2 = <span class='line'>AB</span>&sup2 + <span class='line'>AD</span>&sup2",
+                    "3.(7&#8730<span class='line'>2</span>)&sup2 = <span class='line'>AB</span>&sup2 + <span class='line'>AD</span>&sup2 = 98",
+                    "4.已知ABCD為正方形，所以三角形ABD中的<span class='line'>AB</span>為a，則<span class='line'>AB</span> = <span class='line'>AD</span> = a",
+                    "5.所以a&sup2 + a&sup2 = 2a&sup2 = 98，a&sup2 = 49，因此 a = &#177 7",
+                    "6.因為邊長為正，所以邊長為7公分 "
+                ]
+            },
+            {
+                type: "radio_check",
+                question: '求矩形EFGH中<span class="line">FG</span>的長度',
+                img: "12.png",
+                options:["(A) 15","(B) 14","(C) 13","(D) 12"],
+                answer: ["(A) 15"],
+                hint:[
+                    "1.&#916 EFG是一個直角三角形，因此可以利用畢氏定理算出邊長的長度",
+                    "2.<span class='line'>EG</span>&sup2 = <span class='line'>EF</span>&sup2 + <span class='line'>FG</span>&sup2",
+                    "3.17&sup2 = 8&sup2 + <span class='line'>FG</span>&sup2",
+                    "4.將式子移項後可得：<span class='line'>FG</span>&sup2 = 17&sup2 - 8&sup2 = 225",
+                    "5.因此<span class='line'>FG</span> = &#177 15",
+                    "6.因為邊長為正，所以<span class='line'>FG</span> = 15 "
+                ]
+            },
+            {
+                type: "radio_check",
+                question: '三角形ABC為一直角三角形,<span class="line">AB</span>=15,<span class="line"> AC</span>=20,請問<span class="line"> AD</span>的長度為多少?',
+                img: "1.png",
+                options:["(A) 17","(B) 14","(C) 12","(D) 16"],
+                answer: ["(C) 12"],
+                hint: [
+                    "1.&#916 ABC是一個直角三角形，因此可以利用畢氏定理先算出斜邊BC的長度",
+                    "2.<span class='line'>BC</span>&sup2 = <span class='line'>AB</span>&sup2 + <span class='line'>AC</span>&sup2",
+                    "3.<span class='line'>BC</span>&sup2 = 15&sup2 + 20&sup2 = 625",
+                    "4.<span class='line'>BC</span> = 25",
+                    "5.因為直角三角形ABC面積<br> =1/2 x <span class='line'>AB</span> x <span class='line'>AC</span> = 1/2 x <span class='line'>BC</span> x <span class='line'>AD</span>",
+                    "6. 1/2 x 15 x 20 = 1/2 x 25 x <span class='line'>AD</span>",
+                    "7.將式子移項後可得：<span class='line'>AD</span> = 12",
+                    "<hr>公式：斜邊上的高(AD) = 兩股乘積(AB x AC)/2"
+                ]
+            },
+            {
+                type: "radio_check",
+                question: '垂直於地面的旗杆上，有一條繩子從旗杆頭垂下，已知繩子比旗杆的高多出1公尺，若將此繩尾沿著地面向外移動7公尺後，可將繩子拉直，則旗杆的高是多少公尺?',
+                img: "9.png",
+                options:["(A) 20","(B) 22","(C) 24","(D) 26"],
+                answer: ["(C) 24"],
+                hint:[
+                    "1.設旗杆的高為X公尺，並依題意作圖：",
+                    "<img src='10.png' height=150px width=150px>",
+                    "2.由畢氏定理可知： (X+1)&sup2 = X&sup2 + 7&sup2",
+                    "  => X&sup2 + 2X + 1 = X&sup2 + 49",
+                    "3.消去X&sup2之後，2X + 1 = 49，解出X = 24",
+                    "所以旗杆的高為24公尺",
+                    "<hr>要訣：杆高、拉直的繩子與地面7公尺，形成一直角三角形的三邊長"
+                ]
+            },
+            {
+                type: "radio_check",
+                question: '電視機的尺寸指的是電視螢幕面板對角線的長度。今有一臺25吋的電視，其螢幕面板的長寬比為4：3，則此電視螢幕面板長為幾吋?',
+                img: "13.png",
+                options:["(A) 22","(B) 20","(C) 21","(D) 23"],
+                answer: ["(B) 20"],
+                hint:[
+                    "1.設長為 4X 吋、寬為 3X 吋，X &#8800 0",
+                    "2.由畢氏定理可知： 25&sup2 = (4x)&sup2 + (3X)&sup2 = 16X&sup2 + 9X&sup2 =25X&sup2",
+                    "3.即 X&sup2 =25，X = &#177 5(負不合)",
+                    "4.故此電視螢幕面板的長為4 x 5 = 20 (吋)"
+                ]
+            },
+            {
+                type: "radio_check",
+                question: '如右圖，在三角形ABC中，<span class="line">AB</span>=10，<span class="line">BC</span>=21，<span class="line">AC</span>=17，則<span class="line">BE</span>=?',
+                img: "29.png",
+                options:["(A) 5","(B) 6","(C) 7","(D) 8"],
+                answer: ["(B) 6"],
+                hint:[
+                    "1.<span class='line'>BE</span> = x => <span class='line'>CE</span> = 21-x",
+                    "2.因為10&sup2 - x&sup2 = <span class='line'>AE</span>&sup2 = 17&sup2 - (21-x)&sup2",
+                    "3.=> 100 - x&sup2 = 289 -441 +42x - x&sup2 => 42x = 252 => x=6",
+                    "4.所以<span class='line'>BE</span> = 6"
+                ]
+            }
+            
+
+        ];
+
+        //出題模式
+        var index=0;
+        var score=0;
+        
+        var recordQue=[];   //預設題目為未作答
+        for(var i=0;i<questions.length;i++){
+            recordQue.push(false);
+        }
+
+        var wrongQue=[];    //記錄錯誤題目
+
+        function showQue(){
+            const questionDiv=document.getElementById('que');
+            const picDiv=document.getElementById('pic');
+
+            let optionsHtml="";
+            if(questions[index].type=="radio_check"){
+                for(var i=0;i<questions[index].options.length;i++){
+                    var option=questions[index].options[i];
+                    optionsHtml+=`<label><input type="radio" name="question${index}" class="optionInput" value="${option}">${option}</label><br>`;
+                }
+            }
+
+            let inputHtml="";
+            if(questions[index].type=="text"){
+                inputHtml=`
+                <input type="text" id="ans" placeholder="輸入你的答案" ${recordQue[index]? 'disabled':''}>`;
+            }
+           
+            questionDiv.innerHTML=`
+                <h3>第${index+1}題：</h3>
+                <h4>${questions[index].question}</h4><br>
+                ${optionsHtml||inputHtml}
+                <button id="check" class="function_btn" onclick="checkAns();" ${recordQue[index]? 'disabled':''}>送出答案</button>
+                <button id="hint" class="function_btn" onclick="showHint();">提示</button>
+                <br><br><span id="fb"></span>
+            `;
+            picDiv.innerHTML=`<img class="imgQue" src="${questions[index].img}" alt="題目圖片">`;
+        }
+
+        function showHint(){
+            currentStep=0;
+            const modalHtml=`
+            <div id="hintModal" class="modal">
+                <div class="modalContent">
+                    <span class="close" onclick="closeModal();">&times;</span>
+                    <h4>解題過程</h4>
+                    <div id="hintStep">
+                        <ul id="hintStepList"></ul>
+                    </div>
+                    <button id="autoStep" class="modal_btn" onclick="autoStep();">逐步顯示</button>
+                    <button id="manualStep" class="modal_btn" onclick="nextStep();">下一步</button>
+                    <button id="clearStep" class="modal_btn" onclick="clearStep();">清除</button>
+                </div>
+            </div>
+            `;
+
+            const modalContainer=document.createElement('div');
+            modalContainer.innerHTML=modalHtml;
+            document.body.appendChild(modalContainer);
+
+            const hintList=document.getElementById('hintStepList');
+            hintList.innerHTML="";
+            for(var i=0;i<questions[index].hint.length;i++){
+                hintList.innerHTML+=`<li id="hintStep${i}">${questions[index].hint[i]}</li>`;
+            }
+        }
+
+        function clearStep(){
+            clearInterval(stepInterval);
+            currentStep=0;
+            
+            const hintList=document.getElementById('hintStepList');
+                if(hintList){
+                    for(var i=0;i<hintList.children.length;i++){
+                        hintList.children[i].style.display='none';
+                    }
+                }
+        }
+
+        function nextStep(){
+            const step=document.getElementById(`hintStep${currentStep}`);
+            if(step){
+                step.style.display='list-item';
+                currentStep++;
+            }else{
+                alert("已經是最後一步了!");
+            }
+        }
+
+        function closeModal(){
+            const modal=document.getElementById('hintModal');
+            if(modal){
+                modal.remove();
+            }
+        }
+
+        var currentStep=0;
+        var stepInterval;
+
+        function autoStep(){
+            currentStep=0;
+            clearInterval(stepInterval);
+
+            stepInterval=setInterval(()=>{
+                const step=document.getElementById(`hintStep${currentStep}`);
+                if(step){
+                    step.style.display='list-item';
+                    currentStep++;
+                }else{
+                    clearInterval(stepInterval);
+                }
+            },1500);
+        }
+
+
+        
+        var finishedQue=0;
+              
+        function checkAns(){
+            const fb = document.getElementById('fb');
+            const progressCircles = document.querySelectorAll('.progress-circle');
+            
+            let userAns;
+            if(questions[index].type == "text" || questions[index].type == "textarea"){
+                userAns = document.getElementById('ans').value.trim();
+            } else if(questions[index].type == "singleList"){
+                userAns = document.getElementById('singleList').value;
+            } else {
+                const selectedOptions = Array.from(document.querySelectorAll('.optionInput:checked')).map(el => el.value);
+                userAns = selectedOptions;
+            }
+
+            if (questions[index].type == "radio_check") {
+                if (JSON.stringify(userAns.sort()) == JSON.stringify(questions[index].answer.sort())) {
+                    fb.style.color = "#4caf50";
+                    fb.innerHTML = '<img src="correct.jpg" class="fbImg">答對了!!!';
+                    document.getElementById('check').disabled = true;
+                    document.querySelectorAll('.optionInput').forEach(el => el.disabled = true);
+                    progressCircles[index].classList.add('correct');
+                    finishedQue++;
+                    
+                    // 儲存圓圈狀態到 localStorage
+                    localStorage.setItem(`circle${index}`, 'correct');
+
+                    if(finishedQue==questions.length){
+                        localStorage.setItem('exercise2Completed','true');
+                    }
+                } else {
+                    fb.style.color = "#f44336";
+                    fb.innerHTML = '<img src="wrong.jpg" class="fbImg">答錯了!!!';
+                    
+                    // 儲存圓圈狀態到 localStorage
+                    localStorage.setItem(`circle${index}`, 'wrong');
+                }
+            } else {
+                if (JSON.stringify(userAns) == JSON.stringify(questions[index].answer)) {
+                    fb.style.color = "#4caf50";
+                    fb.innerHTML = '<img src="correct.jpg" class="fbImg">答對了!!!';
+                    document.getElementById('check').disabled = true;
+                    document.querySelectorAll('.optionInput').forEach(el => el.disabled = true);
+                    progressCircles[index].classList.add('correct');
+                    finishedQue++;
+                    
+                    // 儲存圓圈狀態到 localStorage
+                    localStorage.setItem(`circle${index}`, 'correct');
+                } else {
+                    fb.style.color = "#f44336";
+                    fb.innerHTML = '<img src="wrong.jpg" class="fbImg">答錯了!!!';
+                    
+                    // 儲存圓圈狀態到 localStorage
+                    localStorage.setItem(`circle${index}`, 'wrong');
+                }
+            }
+
+            recordQue[index] = true;
+        }
+
+        function nextQue() {
+            document.getElementById('fb').innerHTML="";
+            if (index < questions.length - 1) {
+                index++;
+                showQue();
+            } else {
+                // 顯示完成按鈕
+                alert("作答完畢!可以前往下一個單元繼續學習");
+                document.getElementById("prevQue").style.display = "none"; 
+                document.getElementById("nextQue").style.display = "none"; 
+                document.getElementById("tryAgain").style.display = "block";
+                document.getElementById("finishBtn").style.display = "block"; 
+            }
+        }
+
+        function prevQue() {
+            if (index > 0) {
+                index--;
+                showQue();
+            }
+        }
+
+        //計時模式
+        var sec=0;
+        var timerId;
+
+        function countdown(){
+            sec++;
+            // document.getElementById('time').innerHTML=`學習時間：${sec} 秒`
+            // localStorage.setItem("learnTime",sec);
+        }
+
+        function goToFeedback(){
+            window.location.href = "exercise3.html";
+        }
+
+        function tryAgain(){
+            window.location.href = 'exercise2.html';
+        }
+
+        // 初始化進度條圓圈的顯示
+        function initializeProgressBar() {
+            const progressBar = document.getElementById('progressBar');
+            const progressCircles = [];
+            questions.forEach(() => {
+                const circle = document.createElement('div');
+                circle.className = 'progress-circle';
+                progressBar.appendChild(circle);
+                progressCircles.push(circle);
+            });
+
+            // 從 localStorage 讀取並更新圓圈的狀態
+            for (let i = 0; i < questions.length; i++) {
+                //const storedStatus = localStorage.getItem(`circle${i}`);
+                const circle = progressCircles[i];
+                if (storedStatus === 'correct') {
+                    circle.classList.add('correct');
+                } else if (storedStatus === 'wrong') {
+                    circle.classList.add('wrong');
+                }
+            }
+        }
+
+        window.onload = function() {
+            // 從 localStorage 取得使用者名稱並顯示
+
+            document.getElementById('usernameText').innerHTML = localStorage.getItem("loggedInUser");
+            showQue();
+            initializeProgressBar();
+
+            const isCompleted = localStorage.getItem('exercise2Completed');
+        };
+
+
+    </script>
+</head>
+    <body>
+        <header>
+            <div class="menu">
+                <ul class="drop-down-menu">
+                    <li><a href="homePage.html">首頁</a></li>
+                    <li><a href="totalClass.html">課程</a>
+                        <ul>
+                            <li><a href="">發現畢氏定理</a>
+                                <ul>
+                                    <li><a href="ch11.html">直角三角形的定義及名稱</a></li>
+                                    <li><a href="ch12.html">畢氏定理(或商高定理、勾股定理)</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="">畢氏定理的應用</a>
+                                <ul>
+                                    <li><a href="ch21.html">利用畢氏定理求矩形的對角線長</a></li>
+                                    <li><a href="ch22.html">直角三角形斜邊上的高</a></li>
+                                    <li><a href="ch23.html">畢氏定理的生活應用</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="">直角坐標平面上兩點的距離公式</a>
+                                <ul>
+                                    <li><a href="ch31.html">數線上的兩點距離</a></li>
+                                    <li><a href="ch32.html">直角座標平面上兩點的距離</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="exercise1.html">練習區</a>
+                        <ul>
+                            <li><a href="exercise1.html">發現畢氏定理</a></li>
+                            <li><a href="exercise2.html">畢氏定理的應用</a></li>
+                            <li><a href="exercise3.html">直角坐標平面上兩點的距離公式</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="challenge.html">挑戰區</a></li>
+
+                    <li><a href="feedback.html">學習回饋</a></li>
+                </ul>
+            </div>
+
+            
+            <div class="username-display" id="usernameDisplay">
+                <img src="profile.png" alt="使用者圖片">
+                <div class="dropdown">
+                    <span id="usernameText">使用者</span>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" onclick="logoutUser();">登出</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="box">
+                <div class="content">
+                    <h2>練習題2 - 畢氏定理的應用</h2>
+                    <div class="feedback">
+                        <div id="progressBar" class="progress-bar"></div>                    </div>
+                    <hr>
+                    <div class="Question">
+                        <div id="que">題目</div>
+                        <div id="pic">圖片</div>
+                    </div>
+                    
+    
+                    <div class="btn">
+                        <button id="prevQue" onclick="prevQue();">上一題</button>
+                        <button id="nextQue" onclick="nextQue();">下一題</button>
+                        <button id="tryAgain" onclick="tryAgain();" style="display: none;">再練習一次</button>
+                        <button id="finishBtn" onclick="goToFeedback();" style="display: none;">前往下一單元</button>
+                    </div>
+    
+                    
+                    
+                        
+                </div>
+            </div>
+
+            
+        </main>
+        
+
+        
+    </body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>課程內容</title>
+    <link rel="stylesheet" href="ch2_3_1.css">
+</head>
+<body>
+    <header>
+        <div class="menu">
+            <ul class="drop-down-menu">
+                <li><a href="homePage.html">首頁</a></li>
+                <li><a href="totalClass.html">課程</a>
+                    <ul>
+                        <li><a href="">發現畢氏定理</a>
+                            <ul>
+                                <li><a href="ch11.html">直角三角形的定義及名稱</a></li>
+                                <li><a href="ch12.html">畢氏定理(或商高定理、勾股定理)</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">畢氏定理的應用</a>
+                            <ul>
+                                <li><a href="ch21.html">利用畢氏定理求矩形的對角線長</a></li>
+                                <li><a href="ch22.html">直角三角形斜邊上的高</a></li>
+                                <li><a href="ch23.html">畢氏定理的生活應用</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">直角坐標平面上兩點的距離公式</a>
+                            <ul>
+                                <li><a href="ch31.html">數線上的兩點距離</a></li>
+                                <li><a href="ch32.html">直角座標平面上兩點的距離</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="exercise1.html">練習區</a>
+                    <ul>
+                        <li><a href="exercise1.html">發現畢氏定理</a></li>
+                        <li><a href="exercise2.html">畢氏定理的應用</a></li>
+                        <li><a href="exercise3.html">直角坐標平面上兩點的距離公式</a></li>
+                    </ul>
+                </li>
+                <li><a href="challenge.html">挑戰區</a></li>
+
+                <li><a href="feedback.html">學習回饋</a></li>
+            </ul>
+        </div>
+        <div class="username-display" id="usernameDisplay">
+            <img src="profile.png" alt="使用者圖片">
+            <div class="dropdown">
+                <span id="usernameText">使用者</span>
+                <ul class="dropdown-menu">
+                    <li><a href="#" onclick="logoutUser();">登出</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <div class="sidebar">
+        <h3>2-3畢氏定理</h3>
+        <h4><a onclick="toclass('ch1')">發現畢氏定理</a></h4>
+        <div id="ch1" class="submenu">
+            <a name="ch11" href="ch11.html">直角三角形的定義及名稱</a><br><br>
+            <a name="ch12" href="ch12.html">畢氏定理(或商高定理、勾股定理)</a><br><br>
+        </div>
+
+        <h4><a onclick="toclass('ch2')">畢氏定理的應用</a></h4>
+        <div id="ch2" class="submenu">
+            <a name="ch21" href="ch21.html">利用畢氏定理求矩形的對角線長</a><br><br>
+            <a name="ch22" href="ch22.html">直角三角形斜邊上的高</a><br><br>
+            <a name="ch23" href="ch23.html">畢氏定理的生活應用</a><br><br>
+        </div>
+
+        <h4><a onclick="toclass('ch3')">直角坐標平面上兩點的距離公式</a></h4>
+        <div id="ch3" class="submenu">
+            <a name="ch31" href="ch31.html">數線上的兩點距離</a><br><br>
+            <a name="ch32" href="ch32.html">直角座標平面上兩點的距離</a><br><br>
+        </div>
+    </div>
+
+    <main>
+        <div class="box">
+            <div class="content">
+                
+                <div id="ch11" class="content-section">
+                    <h3>發現畢氏定理</h3>
+                    <hr><h4>畢氏定理(或商高定理、勾股定理)</h4>
+                </div>
+
+                <div class="area">
+                    <div class="statement" id="dynamicText">
+                        <p></p>
+                    </div>
+
+                    <div>
+                        <canvas id="myCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn">
+                <button id="prev" onclick="prevStep();">上一步</button>
+                <button id="next" onclick="nextStep()">下一步</button>
+                <button id="auto" onclick="toggleAutoPlay()">自動播放</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+
+        const steps = [
+            "給定一直角三角形",
+            "設一直角三角形斜邊的長度為 c。",
+            "兩股的長度分別為 a 和 b<br>則 c&sup2; = a&sup2; + b&sup2;，或說 c = &#8730;<span class='line'>a&sup2; + b&sup2;</span>。",
+            "利用乘法公式說明畢氏定理：<br>4 個相同的直角三角形，三邊長分別為 a、b、c。",
+            "將此 4 個直角三角形拼成一個邊長為 <br>a+b 的正方形 ABCD。",
+            "則正方形 ABCD 的面積為：<br>(a+b)&sup2; = 4(1/2)(ab) + c&sup2;<br>a&sup2; + 2ab + b&sup2 = 2ab + c&sup2;<br>=> a&sup2; + b&sup2; = c&sup2;。",
+            "步驟已結束"
+        ];
+
+        var currentStep = 0;
+        var autoPlayInterval = null;
+        const dynamicText = document.getElementById("dynamicText");
+        const canvas = document.getElementById("myCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const image = new Image();
+        image.src = "A.png";
+
+        // 初始化畫布
+        function drawInitialTriangle() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.moveTo(10, 120); // 左下角
+            ctx.lineTo(60, 20); // 上方
+            ctx.lineTo(60, 120); // 右下角
+            ctx.closePath();
+            ctx.stroke();
+            
+
+            ctx.beginPath();
+            ctx.moveTo(60, 120); 
+            ctx.lineTo(50, 120); 
+            ctx.lineTo(50, 110); // 向上 10px
+            ctx.lineTo(60, 110); // 向左回到垂直邊
+            ctx.closePath();
+            ctx.fillStyle = "black";
+            ctx.fill();
+        }
+
+        // 動態步驟更新
+        function updateStep() {
+            dynamicText.querySelector("p").innerHTML = steps[currentStep];
+            drawStep(currentStep);
+        }
+
+        function drawStep(step) {
+            drawInitialTriangle();
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "black";
+
+            if (step === 1) { // 標記斜邊
+                ctx.beginPath();
+                ctx.moveTo(10, 120);
+                ctx.lineTo(60, 20);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.fillText("c", 20, 80);
+
+                
+            } else if (step === 2) { // 標記股
+                ctx.strokeStyle = "blue";
+                ctx.lineWidth = 2;
+
+                ctx.beginPath();
+                ctx.moveTo(10, 120);
+                ctx.lineTo(60, 20);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.fillText("c", 20, 80);
+
+
+                ctx.beginPath(); // 垂直邊
+                ctx.moveTo(10, 120);
+                ctx.lineTo(60, 120);
+                ctx.strokeStyle = "blue";
+                ctx.stroke();
+                ctx.fillText("a", 35, 135);
+
+                ctx.beginPath(); // 水平邊
+                ctx.moveTo(60, 20);
+                ctx.lineTo(60, 120);
+                ctx.strokeStyle = "green";
+                ctx.stroke();
+                ctx.fillText("b", 65, 70);
+            } else if (step === 3) { // 標記等腰直角三角形
+                // ctx.strokeStyle = "blue";
+                // ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(10, 120);
+                ctx.lineTo(60, 20);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.fillText("c", 20, 80);
+
+
+                ctx.beginPath(); // 垂直邊
+                ctx.moveTo(10, 120);
+                ctx.lineTo(60, 120);
+                ctx.strokeStyle = "blue";
+                ctx.stroke();
+                ctx.fillText("a", 35, 135);
+
+                ctx.beginPath(); // 水平邊
+                ctx.moveTo(60, 20);
+                ctx.lineTo(60, 120);
+                ctx.strokeStyle = "green";
+                ctx.stroke();
+                ctx.fillText("b", 65, 70);
+
+                //2
+                ctx.beginPath();
+                ctx.moveTo(75, 120);
+                ctx.lineTo(125, 20);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                // ctx.fillText("c", 20, 80);
+
+
+                ctx.beginPath(); // 垂直邊
+                ctx.moveTo(75, 120);
+                ctx.lineTo(125, 120);
+                ctx.strokeStyle = "blue";
+                ctx.stroke();
+                //ctx.fillText("a", 35, 135);
+
+                ctx.beginPath(); // 水平邊
+                ctx.moveTo(125, 20);
+                ctx.lineTo(125, 120);
+                ctx.strokeStyle = "green";
+                ctx.stroke();
+                //ctx.fillText("b", 65, 70);
+
+                //第3個
+                ctx.beginPath();
+                ctx.moveTo(140, 120);
+                ctx.lineTo(190, 20);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                //ctx.fillText("c", 20, 80);
+
+                ctx.beginPath(); // 垂直邊
+                ctx.moveTo(140, 120);
+                ctx.lineTo(190, 120);
+                ctx.strokeStyle = "blue";
+                ctx.stroke();
+                //ctx.fillText("a", 35, 135);
+
+                ctx.beginPath(); // 水平邊
+                ctx.moveTo(190, 20);
+                ctx.lineTo(190, 120);
+                ctx.strokeStyle = "green";
+                ctx.stroke();
+                //ctx.fillText("b", 65, 70);
+
+                //第4個
+                ctx.beginPath();
+                ctx.moveTo(205, 120);
+                ctx.lineTo(255, 20);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                //ctx.fillText("c", 20, 80);
+
+                ctx.beginPath(); // 垂直邊
+                ctx.moveTo(205, 120);
+                ctx.lineTo(255, 120);
+                ctx.strokeStyle = "blue";
+                ctx.stroke();
+                //ctx.fillText("a", 35, 135);
+
+                ctx.beginPath(); // 水平邊
+                ctx.moveTo(255, 20);
+                ctx.lineTo(255, 120);
+                ctx.strokeStyle = "green";
+                ctx.stroke();
+                //ctx.fillText("b", 65, 70);
+            }else if(step==4){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(image, 0, 0,150, 150);
+            }else if(step==5){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(image, 0, 0,150, 150);
+            }else if(step==6){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // 切換步驟
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                updateStep();
+            }
+
+            if(currentStep==steps.length-1)
+            localStorage.setItem('ch12',true);
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateStep();
+            }
+        }
+
+        // 自動播放
+        function toggleAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            } else {
+                autoPlayInterval = setInterval(() => {
+                    if (currentStep < steps.length - 1) {
+                        nextStep();
+                    } else {
+                        clearInterval(autoPlayInterval);
+                        autoPlayInterval = null;
+                    }
+                }, 3000); // 每 3 秒切換一步
+            }
+        }
+
+        // 初始顯示
+        drawInitialTriangle();
+        updateStep();
+
+        // 從 localStorage 取得使用者名稱並顯示
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        const usernameText = document.getElementById("usernameText");
+        usernameText.textContent = loggedInUser;
+
+        function toclass(chId){
+            const submenu = document.getElementById(chId);
+            submenu.classList.toggle('active'); // 切換顯示或隱藏
+        }
+
+        function logoutUser() {
+            window.location.href = "userLogin.html";
+        }
+
+    </script>
+</body>
+</html>
