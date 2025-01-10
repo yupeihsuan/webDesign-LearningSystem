@@ -62,30 +62,34 @@
         <section class="intro">
             <h1>歡迎來到學習系統</h1>
             <p>探索課程、挑戰自我，提升學習能力</p>
-            <button onclick="goToClass();">開始學習</button>
+            <!-- <button onclick="goToClass();">開始學習</button> -->
         </section>
 
         <section class="classRec">
-            <div class="introClass">
-                <div class="content">
-                    <h4>📚課程總覽</h4>
-                    <p>瀏覽所有課程，選擇你想學習的單元</p>
-                    <button onclick="viewClass(1);">查看課程</button>
+            <div class="map">
+                <div class="map-node" onclick="viewClass(1);" style="animation-delay: 0s;">
+                    <h4>📚 課程總覽</h4>
                 </div>
 
-                <div class="content">
-                    <h4>✏️練習區</h4>
-                    <p>提供各式練習題，幫助你學習</p>
-                    <button onclick="viewClass(2);">前往練習</button>
+                <div class="map-node" onclick="viewClass(2);" style="animation-delay: 1s;">
+                    <h4>✏️ 練習區</h4>
                 </div>
 
-                <div class="content">
-                    <h4>🏆挑戰區</h4>
-                    <p>更具挑戰性的題目，幫助你提升實力</p>
-                    <button onclick="viewClass(3);">前往挑戰</button>
+                <div class="map-node" onclick="viewClass(3);" style="animation-delay: 2s;">
+                    <h4>🏆 挑戰區</h4>
                 </div>
+
+                <div class="map-node" onclick="viewClass(4);" style="animation-delay: 3s;">
+                    <h4>📋 學習回饋</h4>
+                </div>
+
+                <div class="map-node" onclick="guide();" style="animation-delay: 3s;">
+                    <h4>🔍 網站導覽</h4>
+                </div>
+
             </div>
         </section>
+
     </main>
     <footer>
         <p>動態網頁設計期末專題-U11216004余珮璇 / <a href="sourcePage.html">資料來源</a></p>
@@ -111,8 +115,38 @@
             window.location.href="course.html";
             else if(courseId==2)
             window.location.href="exercise1.html";
-            else
+            else if(courseId==3)
             window.location.href="challenge.html"
+            else
+            window.location.href="feedback.html"
+        }
+
+        function guide(){
+            const rulesModalHtml = `
+                <div id="rulesModal" class="Rulemodal">
+                    <div class="RuleModalContent">
+                        <span class="RuleClose" onclick="closeRulesModal();">&times;</span>
+                        <h4>網站導覽</h4>
+                        <p>歡迎來到學習系統，本次學習主題為【畢氏定理】，<br>本系統提供以下功能，助您輕鬆學習：</p>
+                        <ol>
+                            <li><a href="course.html">課程總覽：</a>瀏覽與學習不同主題的課程</li>
+                            <li><a href="exercise1.html">練習區：</a>進行練習與測試，檢視學習成效</li>
+                            <li><a href="challenge.html">挑戰區：</a>挑戰更進階的題目，提升解題能力</li>
+                            <li><a href="feedback.html">學習回饋：</a>隨時檢視學習進度</li>
+                        </ol>
+                    </div>
+                </div>
+            `;
+            const modalContainer = document.createElement('div');
+            modalContainer.innerHTML = rulesModalHtml;
+            document.body.appendChild(modalContainer);
+        }
+
+        function closeRulesModal() {
+            const modal = document.getElementById('rulesModal');
+            if (modal) {
+                modal.remove();
+            }
         }
 
     </script>

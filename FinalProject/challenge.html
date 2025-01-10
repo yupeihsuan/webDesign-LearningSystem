@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -179,6 +180,9 @@
 
             localStorage.setItem('finishedTest', 'true');
 
+            document.getElementById('timer').style.display="none";
+            document.getElementById('studyBuddy').style.display="none";
+
             // 檢查每一題
             for (var questionNumber in explanations) {
                 var options = document.getElementsByName('p' + questionNumber);
@@ -324,8 +328,6 @@
             window.location.href = "userLogin.html";
         }
 
-        
-
     </script>
 </head>
     <body>
@@ -382,14 +384,16 @@
         </header>
 
         <main>
+            <div class="study-buddy" id="studyBuddy">
+                <div id="timer"><b>剩餘時間</b><br><span id="time">10:00</span></div>
+            </div>
+
             <div class="box">
                 <div class="content">
                     <h2 id="testName">挑戰區：2-3-1~2-3-3測驗</h2>
-                    <div id="timer">剩餘時間：<span id="time">10:00</span></div>
                     <p id="showSc" ></p>
                     
-                    
-                    
+
                     <hr>
                     <div class="queDiv">
                         <div class="que" id="que1">

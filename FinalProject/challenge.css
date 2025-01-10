@@ -278,3 +278,34 @@ input[type="text"] {
 .RuleModalContent p {
     font-size: 1.1em;
 }
+
+.study-buddy {
+    position: fixed;
+    /* z-index: 999; */
+    top: 100px;
+    right: 50px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: f 5s ease-in-out infinite;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background-color: rgba(163, 226, 255, 0.5);
+}
+
+
+.study-buddy img {
+    width: 60%;
+}
+
+@keyframes f {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px) ;
+    }
+}

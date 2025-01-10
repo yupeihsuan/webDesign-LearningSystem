@@ -172,6 +172,7 @@ input{
     background-color: #a8d5ba;
     margin-top: 15px;
     font-weight: bold;
+    height: 30px;
     color: #333333;
 }
 
@@ -348,6 +349,7 @@ input{
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 9999;
 }
 
 .RuleModalContent {
@@ -357,6 +359,7 @@ input{
     width: 50%;
     text-align: center;
     position: relative;
+    z-index: 9999;
 }
 
 .RuleClose {
@@ -366,6 +369,7 @@ input{
     font-size: 25px;
     color: #333;
     cursor: pointer;
+    z-index: 9999;
 }
 
 .RuleModalContent h4 {
@@ -375,3 +379,4 @@ input{
 .RuleModalContent p {
     font-size: 1.1em;
 }
+

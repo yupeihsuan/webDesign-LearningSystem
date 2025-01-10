@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="動態網頁設計-期末專題: 教育平台資料來源">
     <title>資料來源</title>
     <style>
         body {
@@ -30,7 +27,23 @@
             font-size: 0.9em;
             color: #555;
         }
+        button{
+            border: solid 1px #999;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-top: 10px;
+        }
+        
+        button:hover{
+            background-color: #d5d5d5;
+        }
     </style>
+
+    <script>
+        function gotoHomePage(){
+            window.location.href = "homePage.html";
+        }
+    </script>
 </head>
 <body>
     <h2>動態網頁設計-期末專題</h2>
@@ -42,8 +55,9 @@
             <a href="#">康軒國中學習講義數學2上</a>
         </li>
         <li>教學內容: <a href="#">康軒數學科教學配套電子檔</a></li>
-        <li>圖片來源: <a href="#">使用Canva自行製作</a></li>
+        <li>圖片來源: <a href="https://www.canva.com/zh_tw/">使用Canva自行製作</a></li>
     </ul>
     <footer>本網站用途為學校課程期末專題，無任何商業用途</footer>
+    <button onclick="gotoHomePage();">回首頁</button>
 </body>
 </html>
