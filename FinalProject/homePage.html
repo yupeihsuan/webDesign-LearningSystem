@@ -97,6 +97,7 @@
     
 
     <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
         // 從 localStorage 取得使用者名稱並顯示
         const loggedInUser = localStorage.getItem("loggedInUser");
         const usernameText = document.getElementById("usernameText");
