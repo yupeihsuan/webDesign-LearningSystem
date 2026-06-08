@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>課表</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --blue-main: #4a90e2;
+        --blue-light: #f0f7ff;
+        --blue-course-bg: #e3f2fd;
+        --blue-course-text: #1565c0;
+        --bg: #f8fafc;
+        --text: #2c3e50;
+        --danger: #ef4444;
+    }
+
+    body { font-family: "Noto Sans TC", sans-serif; background: var(--bg); color: var(--text); padding: 0; margin: 0; }
+
+    #capture-area {
+        width: 100%; max-width: 700px;
+        margin: 10px auto 130px;
+        padding: 20px; background: white; min-height: 848px;
+        box-sizing: border-box;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+
+    .editable-title {
+        text-align: center; font-size: 1.4rem;
+        border-bottom: 2px solid var(--blue-main);
+        display: block; margin: 0 auto 10px;
+        width: fit-content; padding-bottom: 5px;
+        color: var(--blue-main); cursor: pointer;
+    }
+    .editable-title:hover { background: var(--blue-light); }
+
+    /* ── 模式切換 tab ── */
+    .mode-tabs { display: flex; gap: 6px; margin-bottom: 12px; background: #f1f5f9; border-radius: 12px; padding: 4px; }
+    .mode-tab {
+        flex: 1; text-align: center; padding: 7px 0;
+        border-radius: 9px; font-size: 0.8rem; font-weight: 600;
+        cursor: pointer; color: #94a3b8; transition: 0.2s; user-select: none;
+    }
+    .mode-tab.active { background: white; color: var(--blue-main); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+
+    table { width: 100%; border-collapse: separate; border-spacing: 2px; table-layout: fixed; }
+    th { background: #f1f5f9; color: #64748b; padding: 8px 0; border-radius: 4px; font-size: 0.85rem; }
+
+    .time-col {
+        width: 65px; font-size: 10px; color: #64748b;
+        background: #f8fafc; border-radius: 4px; border: 1px solid #e2e8f0;
+        cursor: pointer; text-align: center; padding: 4px 2px;
+    }
+    .time-col:hover { background: #e2e8f0; color: var(--blue-main); border-color: var(--blue-main); }
+
+    td.cell {
+        border: 1px solid #e2e8f0; border-radius: 4px; height: 55px;
+        text-align: center; font-size: 0.72rem; padding: 2px;
+        overflow: hidden; word-break: break-all; vertical-align: top;
+        cursor: pointer; background: white; transition: 0.15s; position: relative;
+    }
+    td.cell:hover { background: var(--blue-light); border-color: var(--blue-main); }
+    td.cell.selecting { background: #dbeafe !important; border-color: var(--blue-main) !important; border-width: 2px !important; }
+
+    /* 原版單課 */
+    td.cell.has-course-single {
+        background: var(--blue-course-bg) !important; color: var(--blue-course-text) !important;
+        border: 1px solid #90caf9 !important; font-weight: 600; vertical-align: middle;
+    }
+    .single-course-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 4px; }
+
+    /* 比較模式多課 */
+    td.cell.has-multi { height: auto; min-height: 55px; }
+    .course-stack { display: flex; flex-direction: column; gap: 2px; padding: 2px; min-height: 51px; }
+    .course-card {
+        border-radius: 3px; padding: 2px 4px; font-size: 0.68rem; font-weight: 600;
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 2px; text-align: left; line-height: 1.3; transition: 0.15s; position: relative;
+    }
+    .course-card:hover { filter: brightness(0.92); }
+    .course-card .card-name { flex: 1; }
+    .course-card .card-del {
+        opacity: 0; font-size: 10px; color: #ef4444; font-weight: bold;
+        padding: 0 1px; line-height: 1; transition: 0.15s; cursor: pointer; flex-shrink: 0;
+    }
+    .course-card:hover .card-del { opacity: 1; }
+
+    /* 比較模式：每格有「✓確認」按鈕覆蓋在右下 */
+    .confirm-cell-btn {
+        position: absolute; bottom: 3px; right: 3px;
+        background: #22c55e; color: white;
+        border: none; border-radius: 4px;
+        font-size: 9px; font-weight: 700; padding: 2px 5px;
+        cursor: pointer; z-index: 5; line-height: 1.4;
+        opacity: 0; transition: opacity 0.15s;
+        font-family: inherit;
+    }
+    td.cell:hover .confirm-cell-btn,
+    td.cell.has-multi:hover .confirm-cell-btn { opacity: 1; }
+
+    /* 衝堂格子：確認按鈕變灰並禁用 */
+    td.cell.conflict-cell .confirm-cell-btn {
+        background: #94a3b8; cursor: not-allowed;
+    }
+
+    /* 10 色 */
+    .color-0  { background: #dbeafe; color: #1d4ed8; border-left: 3px solid #3b82f6; }
+    .color-1  { background: #dcfce7; color: #166534; border-left: 3px solid #22c55e; }
+    .color-2  { background: #fef3c7; color: #92400e; border-left: 3px solid #f59e0b; }
+    .color-3  { background: #fce7f3; color: #9d174d; border-left: 3px solid #ec4899; }
+    .color-4  { background: #ede9fe; color: #5b21b6; border-left: 3px solid #8b5cf6; }
+    .color-5  { background: #ffedd5; color: #9a3412; border-left: 3px solid #f97316; }
+    .color-6  { background: #cffafe; color: #155e75; border-left: 3px solid #06b6d4; }
+    .color-7  { background: #f0fdf4; color: #14532d; border-left: 3px solid #4ade80; }
+    .color-8  { background: #fdf2f8; color: #831843; border-left: 3px solid #f472b6; }
+    .color-9  { background: #fefce8; color: #713f12; border-left: 3px solid #eab308; }
+
+    .conflict-badge {
+        position: absolute; top: 1px; right: 1px;
+        background: #ffc107; color: #856404;
+        font-size: 8px; font-weight: 700; padding: 0px 3px;
+        border-radius: 3px; z-index: 2; pointer-events: none;
+    }
+
+    /* 圖例 */
+    #legend { margin: 0 0 8px; display: flex; flex-wrap: wrap; gap: 5px; font-size: 0.7rem; }
+    .legend-item { display: flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 12px; font-weight: 600; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* 一鍵確認全部按鈕（比較模式工具列） */
+    .btn-confirm-all { background: #22c55e; color: white; }
+
+    .add-row-container {
+        text-align: center; margin-top: 10px; padding: 10px;
+        border: 2px dashed #e2e8f0; border-radius: 8px;
+        cursor: pointer; color: #94a3b8; transition: 0.2s;
+    }
+    .add-row-container:hover { border-color: var(--blue-main); color: var(--blue-main); background: var(--blue-light); }
+
+    /* 浮動工具列 */
+    .floating-bar {
+        position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+        background: rgba(255,255,255,0.97); padding: 8px 15px; border-radius: 30px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.12); display: flex; gap: 6px; align-items: center;
+        z-index: 100; border: 1px solid #eee; width: 95%; max-width: 520px;
+        justify-content: space-around; flex-wrap: wrap;
+    }
+    .btn { border: none; padding: 7px 13px; border-radius: 20px; font-weight: 600; cursor: pointer; font-size: 12px; white-space: nowrap; margin: 2px; font-family: inherit; }
+    .btn-add   { background: var(--blue-main); color: white; }
+    .btn-print { background: var(--danger); color: white; }
+    .btn-reset { background: #64748b; color: white; }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* ── 確認選課 Modal ── */
+    .modal-overlay {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,0.45); z-index: 200;
+        justify-content: center; align-items: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+        background: white; border-radius: 16px; padding: 22px;
+        width: 90%; max-width: 360px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal h3 { margin: 0 0 14px; font-size: 1rem; }
+    .modal input {
+        width: 100%; box-sizing: border-box;
+        border: 1.5px solid #e2e8f0; border-radius: 8px;
+        padding: 9px 12px; font-size: 0.9rem; margin-bottom: 10px;
+        font-family: inherit; outline: none;
+    }
+    .modal input:focus { border-color: var(--blue-main); }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+    .modal-actions .btn { padding: 8px 18px; }
+
+    /* ── 選課確認 Modal（從比較→正式） ── */
+    #confirm-modal .modal { max-width: 400px; }
+    #confirm-modal h3 { color: #22c55e; }
+    .pick-list { display: flex; flex-direction: column; gap: 6px; max-height: 55vh; overflow-y: auto; margin-bottom: 4px; }
+    .pick-row {
+        display: flex; align-items: center; gap: 6px;
+        padding: 7px 10px; border-radius: 8px;
+        border: 1.5px solid #e2e8f0; font-size: 0.8rem;
+        background: #fafafa;
+    }
+    .pick-row .slot-label { color: #64748b; font-size: 0.7rem; flex-shrink: 0; width: 90px; }
+    .pick-row select {
+        flex: 1; border: 1.5px solid #e2e8f0; border-radius: 6px;
+        padding: 4px 6px; font-size: 0.78rem; font-family: inherit; outline: none;
+        background: white;
+    }
+    .pick-row select:focus { border-color: #22c55e; }
+    .pick-row.conflict-row { border-color: #ffc107; background: #fffbeb; }
+    .pick-row .conflict-tag {
+        font-size: 9px; color: #856404; background: #fef3c7;
+        border-radius: 4px; padding: 1px 5px; flex-shrink: 0;
+    }
+
+    @media (max-width: 480px) {
+        #capture-area { padding: 10px; margin-bottom: 140px; }
+        .editable-title { font-size: 1.1rem; }
+        .time-col { width: 50px; font-size: 9px; }
+        td.cell { font-size: 0.65rem; }
+        th { font-size: 0.75rem; }
+    }
+
+    @media print {
+        @page { size: A4 portrait; margin: 1cm; }
+        body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        body > *:not(#capture-area) { display: none !important; }
+        .floating-bar, .add-row-container, #legend, .mode-tabs, .confirm-cell-btn { display: none !important; }
+        #capture-area { margin: 0 !important; padding: 0 !important; box-shadow: none !important; width: 100% !important; max-width: 100% !important; }
+        .card-del { display: none !important; }
+        td.cell.has-course-single { background-color: #e3f2fd !important; color: #1565c0 !important; }
+        .color-0 { background-color: #dbeafe !important; color: #1d4ed8 !important; }
+        .color-1 { background-color: #dcfce7 !important; color: #166534 !important; }
+        .color-2 { background-color: #fef3c7 !important; color: #92400e !important; }
+        .color-3 { background-color: #fce7f3 !important; color: #9d174d !important; }
+        .color-4 { background-color: #ede9fe !important; color: #5b21b6 !important; }
+        .color-5 { background-color: #ffedd5 !important; color: #9a3412 !important; }
+        .color-6 { background-color: #cffafe !important; color: #155e75 !important; }
+        .color-7 { background-color: #f0fdf4 !important; color: #14532d !important; }
+        .color-8 { background-color: #fdf2f8 !important; color: #831843 !important; }
+        .color-9 { background-color: #fefce8 !important; color: #713f12 !important; }
+    }
+</style>
+</head>
+<body>
+
+<div id="capture-area">
+    <h1 id="main-title" class="editable-title" onclick="editTitle()">【 115學年度第1學期 學期課表 】</h1>
+
+    <div class="mode-tabs">
+        <div class="mode-tab active" id="tab-single" onclick="setMode('single')">確認版課表</div>
+        <div class="mode-tab" id="tab-multi" onclick="setMode('multi')">排課</div>
+    </div>
+
+    <div id="legend"></div>
+
+    <table>
+        <thead>
+            <tr><th class="time-col">時段</th><th>週一</th><th>週二</th><th>週三</th><th>週四</th><th>週五</th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+    </table>
+    <div class="add-row-container" onclick="addTimeSlot()"><strong>＋ 新增時段</strong></div>
+</div>
+
+<!-- 浮動工具列 -->
+<div class="floating-bar">
+    <span id="status" style="font-size:11px; color: var(--blue-main); font-weight: bold; min-width: 45px; text-align: center;">點選格子</span>
+    <button id="add-btn" class="btn btn-add" disabled onclick="handleAdd()">排入</button>
+    <button id="confirm-all-btn" class="btn btn-confirm-all" style="display:none" onclick="openConfirmModal()">✓ 確認排入正式課表</button>
+    <button class="btn" style="background:#f1f5f9" onclick="clearSelect()">取消</button>
+    <button class="btn btn-print" onclick="window.print()">列印/PDF</button>
+    <button class="btn btn-reset" onclick="resetAll()">重置</button>
+</div>
+
+<!-- 加課 Modal（比較模式） -->
+<div class="modal-overlay" id="add-modal">
+    <div class="modal">
+        <h3 style="color:var(--blue-main)">➕ 加入比較課程</h3>
+        <input id="inp-name" placeholder="課程名稱" autocomplete="off" />
+        <input id="inp-room" placeholder="教室地點" autocomplete="off" />
+        <div class="modal-actions">
+            <button class="btn" style="background:#f1f5f9" onclick="closeAddModal()">取消</button>
+            <button class="btn btn-add" onclick="addMultiCourse()">加入</button>
+        </div>
+    </div>
+</div>
+
+<!-- 確認排入正式課表 Modal -->
+<div class="modal-overlay" id="confirm-modal">
+    <div class="modal" style="max-width:420px">
+        <h3 style="color:#22c55e">✓ 確認排入正式課表</h3>
+        <p style="font-size:0.8rem;color:#64748b;margin:0 0 12px">每格選擇要保留的課程，衝堂格子請先解決後再確認。</p>
+        <div class="pick-list" id="pick-list"></div>
+        <div class="modal-actions">
+            <button class="btn" style="background:#f1f5f9" onclick="closeConfirmModal()">取消</button>
+            <button class="btn btn-confirm-all" id="do-confirm-btn" onclick="doConfirm()">確認套用</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const defaultConfig = [
+    {id:"第 1 節", t:"08:10-09:00"},{id:"第 2 節", t:"09:10-10:00"},
+    {id:"第 3 節", t:"10:10-11:00"},{id:"第 4 節", t:"11:10-12:00"},
+    {id:"第 5 節", t:"12:10-13:00"},{id:"第 6 節", t:"13:10-14:00"},
+    {id:"第 7 節", t:"14:10-15:00"},{id:"第 8 節", t:"15:10-16:00"},
+    {id:"第 9 節", t:"16:10-17:00"},{id:"第 10 節", t:"17:10-18:00"}
+];
+
+let mode       = localStorage.getItem('tt_v9_mode')   || 'single';
+let singleData = JSON.parse(localStorage.getItem('tt_v9_single')) || {};
+let multiData  = JSON.parse(localStorage.getItem('tt_v9_multi'))  || {};
+let title      = localStorage.getItem('tt_v9_title')  || "【 115學年度第1學期 學期課表 】";
+let timeConfig = JSON.parse(localStorage.getItem('tt_v9_config')) || JSON.parse(JSON.stringify(defaultConfig));
+let colorMap   = JSON.parse(localStorage.getItem('tt_v9_colors')) || {};
+let colorCounter = Object.keys(colorMap).length;
+const COLOR_COUNT = 10;
+
+function getCourseColor(name) {
+    if (colorMap[name] === undefined) { colorMap[name] = colorCounter++ % COLOR_COUNT; localStorage.setItem('tt_v9_colors', JSON.stringify(colorMap)); }
+    return colorMap[name];
+}
+
+// ── 模式切換 ─────────────────────────────────────────────
+function setMode(m) {
+    mode = m;
+    localStorage.setItem('tt_v9_mode', mode);
+    document.getElementById('tab-single').classList.toggle('active', m === 'single');
+    document.getElementById('tab-multi').classList.toggle('active', m === 'multi');
+    document.getElementById('confirm-all-btn').style.display = m === 'multi' ? '' : 'none';
+    clearSelect(); render();
+}
+
+// ── 渲染 ─────────────────────────────────────────────────
+function render() {
+    document.getElementById('main-title').innerText = title;
+    const html = timeConfig.map((item, r) => {
+        let cells = `<td class="time-col" onclick="editTimeSlot(${r})"><strong>${item.id}</strong><br><span style="font-size:0.9em">${item.t}</span></td>`;
+        for (let c = 1; c <= 5; c++) {
+            const key = `${r}-${c}`;
+            cells += mode === 'single' ? renderSingleCell(key) : renderMultiCell(key, r, c);
+        }
+        return `<tr>${cells}</tr>`;
+    }).join('');
+    document.getElementById('tbody').innerHTML = html;
+    if (mode === 'multi') renderLegend(); else document.getElementById('legend').innerHTML = '';
+    document.getElementById('confirm-all-btn').style.display = mode === 'multi' ? '' : 'none';
+    updateUI();
+}
+
+function renderSingleCell(key) {
+    const val = singleData[key];
+    if (val) {
+        return `<td class="cell has-course-single" data-key="${key}" onclick="delSingleCourse('${key}')">
+            <div class="single-course-inner"><strong>${val.n}</strong>${val.r ? '<br>'+val.r : ''}</div>
+        </td>`;
+    }
+    return `<td class="cell" data-key="${key}" onclick="toggleCell(this)"></td>`;
+}
+
+function renderMultiCell(key, r, c) {
+    const courses = multiData[key] || [];
+    const names = new Set(courses.map(x => x.n));
+    const conflict = names.size >= 2;
+    let inner = '';
+    if (courses.length > 0) {
+        const cards = courses.map((crs, idx) =>
+            `<div class="course-card color-${getCourseColor(crs.n)}">
+                <span class="card-name">${crs.n}${crs.r ? '<br><span style="font-weight:400;font-size:0.9em">'+crs.r+'</span>' : ''}</span>
+                <span class="card-del" onclick="delMultiCourse(event,'${key}',${idx})">✕</span>
+            </div>`
+        ).join('');
+        // 單一課程→顯示確認按鈕；衝堂→顯示灰色（不可用）確認按鈕
+        const btnLabel = conflict ? '⚠ 衝堂' : '✓ 確認';
+        const btnDisabled = conflict ? 'onclick="return false" title="請先解決衝堂"' : `onclick="confirmCell(event,'${key}')"`;
+        inner = `<div class="course-stack">${conflict ? '<span class="conflict-badge">衝堂</span>' : ''
+            }${cards}</div><button class="confirm-cell-btn" ${btnDisabled}>${btnLabel}</button>`;
+    }
+    return `<td class="cell has-multi${conflict ? ' conflict-cell' : ''}" data-key="${key}" onclick="toggleCell(this)">${inner}</td>`;
+}
+
+function renderLegend() {
+    const used = new Set();
+    Object.values(multiData).forEach(arr => arr.forEach(c => used.add(c.n)));
+    if (!used.size) { document.getElementById('legend').innerHTML = ''; return; }
+    document.getElementById('legend').innerHTML = [...used].map(name =>
+        `<div class="legend-item color-${getCourseColor(name)}"><span class="legend-dot" style="background:currentColor"></span>${name}</div>`
+    ).join('');
+}
+
+// ── 單格確認 ─────────────────────────────────────────────
+// 當格子只有 1 種課程時，直接確認；多課且已解衝堂（names.size==1），直接確認
+function confirmCell(event, key) {
+    event.stopPropagation();
+    const courses = multiData[key] || [];
+    if (!courses.length) return;
+    const names = [...new Set(courses.map(c => c.n))];
+    if (names.size >= 2) return; // 衝堂，不處理
+    // 只有一種課程 → 直接套入正式課表
+    const crs = courses[0];
+    singleData[key] = { n: crs.n, r: crs.r };
+    saveSingle(false);
+    // 視覺回饋：閃綠
+    flashKey(key);
+}
+
+function flashKey(key) {
+    render();
+    // 短暫標示正式課表已更新（切換到 single 模式後可見）
+}
+
+// ── 一鍵確認全部 Modal ────────────────────────────────────
+function openConfirmModal() {
+    // 找出所有有課的格子
+    const keys = Object.keys(multiData).filter(k => multiData[k].length > 0);
+    if (!keys.length) { alert('比較課表中還沒有任何課程。'); return; }
+
+    const rows = keys.map(key => {
+        const courses = multiData[key] || [];
+        const names = [...new Set(courses.map(c => c.n))];
+        const conflict = names.length >= 2;
+        // 解析 key 為時段 + 星期
+        const [r, c] = key.split('-').map(Number);
+        const dayNames = ['', '週一', '週二', '週三', '週四', '週五'];
+        const slotLabel = `${timeConfig[r]?.id || r} ${dayNames[c]}`;
+
+        const options = names.map(n => {
+            const sample = courses.find(x => x.n === n);
+            return `<option value="${n}||${sample?.r || ''}">${n}${sample?.r ? ' ('+sample.r+')' : ''}</option>`;
+        }).join('');
+
+        // 若只有一課 → 預設選它；衝堂 → 加提示
+        return `<div class="pick-row${conflict ? ' conflict-row' : ''}" data-key="${key}">
+            <span class="slot-label">${slotLabel}</span>
+            <select data-key="${key}">
+                <option value="">（略過此格）</option>
+                ${options}
+            </select>
+            ${conflict ? '<span class="conflict-tag">衝堂</span>' : ''}
+        </div>`;
+    }).join('');
+
+    document.getElementById('pick-list').innerHTML = rows;
+    document.getElementById('confirm-modal').classList.add('show');
+}
+
+function closeConfirmModal() { document.getElementById('confirm-modal').classList.remove('show'); }
+
+function doConfirm() {
+    const selects = document.querySelectorAll('#pick-list select');
+    let changed = 0;
+    selects.forEach(sel => {
+        const key = sel.dataset.key;
+        const val = sel.value;
+        if (!val) return; // 略過
+        const [n, r] = val.split('||');
+        singleData[key] = { n, r: r || '' };
+        changed++;
+    });
+    if (!changed) { closeConfirmModal(); return; }
+    saveSingle(false);
+    closeConfirmModal();
+    // 切換到正式課表讓使用者看到結果
+    setMode('single');
+    // 顯示成功提示
+    const s = document.getElementById('status');
+    s.style.color = '#22c55e';
+    s.innerText = `已套用 ${changed} 格！`;
+    setTimeout(() => { s.style.color = 'var(--blue-main)'; s.innerText = '點選格子'; }, 2500);
+}
+
+// ── 選取 / UI ─────────────────────────────────────────────
+function toggleCell(el) { el.classList.toggle('selecting'); updateUI(); }
+function clearSelect() { document.querySelectorAll('.cell.selecting').forEach(e => e.classList.remove('selecting')); updateUI(); }
+function updateUI() {
+    const sel = document.querySelectorAll('.cell.selecting').length;
+    document.getElementById('add-btn').innerText = mode === 'single' ? '排入' : '＋ 加課程';
+    document.getElementById('status').innerText = sel ? `已選 ${sel} 格` : '點選格子';
+    document.getElementById('add-btn').disabled = !sel;
+}
+
+function handleAdd() { if (mode === 'single') promptSingleCourse(); else openAddModal(); }
+
+// ── 原版加課 ─────────────────────────────────────────────
+function promptSingleCourse() {
+    const n = prompt("課程名稱："); if (n === null) return;
+    const r = prompt("教室地點：") || "";
+    if (!n.trim()) return;
+    document.querySelectorAll('.cell.selecting').forEach(el => { singleData[el.dataset.key] = { n: n.trim(), r }; el.classList.remove('selecting'); });
+    saveSingle();
+}
+function delSingleCourse(key) { if (confirm("確定刪除此課程？")) { delete singleData[key]; saveSingle(); } }
+
+// ── 比較模式加課 ─────────────────────────────────────────
+function openAddModal() {
+    document.getElementById('inp-name').value = '';
+    document.getElementById('inp-room').value = '';
+    document.getElementById('add-modal').classList.add('show');
+    setTimeout(() => document.getElementById('inp-name').focus(), 100);
+}
+function closeAddModal() { document.getElementById('add-modal').classList.remove('show'); }
+document.getElementById('add-modal').addEventListener('click', e => { if (e.target === document.getElementById('add-modal')) closeAddModal(); });
+document.getElementById('confirm-modal').addEventListener('click', e => { if (e.target === document.getElementById('confirm-modal')) closeConfirmModal(); });
+document.getElementById('inp-name').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('inp-room').focus(); });
+document.getElementById('inp-room').addEventListener('keydown', e => { if (e.key === 'Enter') addMultiCourse(); });
+
+function addMultiCourse() {
+    const n = document.getElementById('inp-name').value.trim();
+    const r = document.getElementById('inp-room').value.trim();
+    if (!n) { document.getElementById('inp-name').focus(); return; }
+    document.querySelectorAll('.cell.selecting').forEach(el => {
+        const key = el.dataset.key;
+        if (!multiData[key]) multiData[key] = [];
+        if (!multiData[key].some(c => c.n === n)) multiData[key].push({ n, r });
+        el.classList.remove('selecting');
+    });
+    getCourseColor(n); saveMulti(); closeAddModal();
+}
+function delMultiCourse(event, key, idx) {
+    event.stopPropagation();
+    if (!confirm('確定移除此課程？')) return;
+    multiData[key].splice(idx, 1);
+    if (!multiData[key].length) delete multiData[key];
+    saveMulti();
+}
+
+// ── 標題 / 時段 ──────────────────────────────────────────
+function editTitle() {
+    const t = prompt("請輸入課表標題：", title);
+    if (t !== null && t.trim()) { title = t; localStorage.setItem('tt_v9_title', title); render(); }
+}
+function editTimeSlot(index) {
+    const cur = timeConfig[index];
+    const newId = prompt("編輯時段名稱（清空確認可刪除此列）：", cur.id);
+    if (newId === null) return;
+    if (!newId.trim()) { if (confirm(`確定刪除「${cur.id}」整列嗎？`)) deleteRow(index); return; }
+    const newTime = prompt("編輯時間：", cur.t);
+    if (newTime !== null) { timeConfig[index].id = newId; timeConfig[index].t = newTime; saveConfig(); }
+}
+function addTimeSlot() {
+    const id = prompt("請輸入新時段名稱：", `第 ${timeConfig.length + 1} 節`); if (!id) return;
+    const time = prompt("請輸入時間：", "00:00-00:00");
+    timeConfig.push({ id, t: time || "" }); saveConfig();
+}
+function deleteRow(idx) {
+    timeConfig.splice(idx, 1);
+    [singleData, multiData].forEach((data, di) => {
+        const nd = {};
+        Object.keys(data).forEach(key => {
+            let [r, c] = key.split('-').map(Number);
+            if (r < idx) nd[key] = data[key]; else if (r > idx) nd[`${r-1}-${c}`] = data[key];
+        });
+        if (di === 0) singleData = nd; else multiData = nd;
+    });
+    saveSingle(false); saveMulti(false); saveConfig();
+}
+function resetAll() {
+    if (!confirm("確定要清除全部課程並重置時段嗎？")) return;
+    singleData = {}; multiData = {}; colorMap = {}; colorCounter = 0;
+    timeConfig = JSON.parse(JSON.stringify(defaultConfig));
+    localStorage.removeItem('tt_v9_single'); localStorage.removeItem('tt_v9_multi'); localStorage.removeItem('tt_v9_colors');
+    saveConfig();
+}
+
+// ── 儲存 ────────────────────────────────────────────────
+function saveSingle(rerender=true) { localStorage.setItem('tt_v9_single', JSON.stringify(singleData)); if(rerender) render(); }
+function saveMulti(rerender=true)  { localStorage.setItem('tt_v9_multi',  JSON.stringify(multiData));  if(rerender) render(); }
+function saveConfig() { localStorage.setItem('tt_v9_config', JSON.stringify(timeConfig)); render(); }
+
+render();
+</script>
+</body>
+</html>
